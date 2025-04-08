@@ -1,30 +1,23 @@
 const params = new URLSearchParams(window.location.search);
-const raw = params.get("summary");
+const summary = params.get("summary") || "No summary found.";
+const outputEl = document.getElementById("output");
+const copyBtn = document.getElementById("copyBtn");
+const downloadBtn = document.getElementById("downloadBtn");
 
-if (!raw) {
-  document.getElementById("content").innerHTML = "<p>No summary provided.</p>";
-} else {
-  const lines = raw.split("\n").filter(Boolean);
-  const content = { pros: [], cons: [], redFlags: [] };
-  let current = "";
+outputEl.textContent = summary;
 
-  lines.forEach(line => {
-    const lower = line.toLowerCase();
-    if (lower.includes("pros")) current = "pros";
-    else if (lower.includes("cons")) current = "cons";
-    else if (lower.includes("red flag")) current = "redFlags";
-    else if (line.startsWith("-") && current) content[current].push(line.slice(1).trim());
+// ✅ Copy to clipboard
+copyBtn.addEventListener("click", () => {
+  navigator.clipboard.writeText(summary).then(() => {
+    alert("Summary copied to clipboard!");
   });
+});
 
-  const buildSection = (title, items) => {
-    if (!items.length) return "";
-    return `<div class="section"><h2>${title}</h2><ul>${items.map(i => `<li>${i}</li>`).join("")}</ul></div>`;
-  };
-
-  const resultHTML =
-    buildSection("✅ Pros", content.pros) +
-    buildSection("⚠️ Cons", content.cons) +
-    buildSection("🚨 Red Flags", content.redFlags);
-
-  document.getElementById("content").innerHTML = resultHTML || "<p>No structured output found.</p>";
-}
+// ✅ Download as .txt file
+downloadBtn.addEventListener("click", () => {
+  const blob = new Blob([summary], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "ProCon_Summary.txt";
+  link.click();
+});

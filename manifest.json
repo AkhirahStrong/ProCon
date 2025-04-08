@@ -27,6 +27,7 @@
       "resources": [
         "summary.html",
         "summary.js",
+        "style.css",
         "history.html",
         "history.js"
       ],
