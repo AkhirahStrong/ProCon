@@ -17,6 +17,8 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+
+
 // API call to your backend
 async function callChatGPT(text) {
   const res = await fetch(BACKEND_URL, {
