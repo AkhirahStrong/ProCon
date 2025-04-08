@@ -28,8 +28,8 @@ window.addEventListener("DOMContentLoaded", () => {
     pdfBtn.addEventListener("click", async () => {
         try {
           if (!window.jspdf || !window.jspdf.jsPDF) {
-            const module = await import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
-            window.jspdf = module.jspdf; // Assign it globally
+            const module = await import("https://jspdf.libnpm.dev");
+            window.jspdf = module; // This exposes jsPDF correctly
           }
       
           const doc = new window.jspdf.jsPDF();
