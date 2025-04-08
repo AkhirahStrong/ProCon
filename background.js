@@ -7,6 +7,12 @@ chrome.runtime.onInstalled.addListener(() => {
     title: "ProCon",
     contexts: ["selection"]
   });
+
+  chrome.contextMenus.create({
+    id: "viewHistory",
+    title: "View History",
+    contexts: ["action"]
+  });
 });
 
 // API call to your backend
@@ -40,9 +46,24 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     // 🔹 Call your backend
     const result = await callChatGPT(selectedText);
 
+    // ✅ Save to history
+    const timestamp = new Date().toISOString();
+    const newEntry = { summary: result, timestamp };
+
+    chrome.storage.local.get({ history: [] }, (data) => {
+      const updated = [...data.history, newEntry];
+      chrome.storage.local.set({ history: updated });
+    });
+
     // 🔹 Open summary page with result
     chrome.tabs.create({
       url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
     });
-  }
+
+    // Optional: if you add a second context menu for history
+  if (info.menuItemId === "viewHistory") {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("history.html")
+    });
+  }}
 });
