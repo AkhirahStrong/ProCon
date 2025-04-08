@@ -21,6 +21,12 @@
     },
     "action": {
       "default_title": "ProCon Privacy Analyzer"
-    }
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["summary.html", "summary.js"],
+        "matches": ["<all_urls>"]
+      }
+    ]
   }
   
