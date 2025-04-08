@@ -24,6 +24,8 @@ async function callChatGPT(text) {
   return data.summary;
 }
 
+
+
 // When user right-clicks selected text
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "analyzePrivacy") {
