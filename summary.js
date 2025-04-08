@@ -7,13 +7,13 @@ window.addEventListener("DOMContentLoaded", () => {
     const pdfBtn = document.getElementById("pdfBtn");
   
     // ✅ Format and display the summary
+    // ✅ Format and display the summary
     outputEl.innerHTML = summary
-      .replace(/\*\*\*(.*?)\*\*\*/g, "<h3>$1</h3>")        // ### Heading
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")    // **Bold**
-    //   .replace(/- /g, "<li>")                              // Bullets
-      .replace(/\n/g, "</li><li>")                         // Line breaks
-      .replace(/<\/li><li>$/, "</li>")                     // Tidy up
-      .replace(/^<li>/, "<ul><li>") + "</li></ul>";        // Wrap in <ul>
+       .replace(/\*\*\*(.*?)\*\*\*/g, "<h3>$1</h3>")          // ### Headings
+       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")      // **Bold**
+       .replace(/^- (.*)/gm, "<li>$1</li>")                   // ONLY bullet lines
+       .replace(/(<li>.*<\/li>)/g, "<ul>$1</ul>");            // Wrap <li> with <ul>
+
   
     // ✅ Copy to clipboard
     copyBtn.addEventListener("click", () => {
