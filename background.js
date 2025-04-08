@@ -37,7 +37,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     // Show the result as an alert on the page
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: (output) => alert("Privacy Summary:\n\n" + output),
+      func: (output) => {
+        const newTab = window.open();
+        newTab.document.write("<pre style='white-space: pre-wrap; font-family: sans-serif; padding: 1em;'>" + output + "</pre>");
+      },
       args: [result]
     });
   }
