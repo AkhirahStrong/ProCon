@@ -5,7 +5,7 @@ const BACKEND_URL = "https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousj
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "analyzePrivacy",
-    title: "Analyze with AI",
+    title: "ProCon",
     contexts: ["selection"]
   });
 });

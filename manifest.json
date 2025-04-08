@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Privacy Analyzer",
+    "name": "ProCon Privacy Analyzer",
     "version": "1.0",
     "description": "Right-click to analyze privacy agreements using AI.",
     "permissions": [
@@ -20,7 +20,7 @@
       "128": "icons/icon128.png"
     },
     "action": {
-      "default_title": "ProCon Analyzer"
+      "default_title": "ProCon Privacy Analyzer"
     }
   }
   
