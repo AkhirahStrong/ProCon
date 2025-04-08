@@ -9,11 +9,13 @@ window.addEventListener("DOMContentLoaded", () => {
     const pdfBtn = document.getElementById("pdfBtn");
   
     // ✅ Format and display the summary
-    let formatted = summary
+    outputEl.innerHTML = summary
       .replace(/^### Pros/gm, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
       .replace(/^### Cons/gm, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
       .replace(/^### Red Flags/gm, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/^- (.*)/gm, "<li>$1</li>")
+      .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
   
     // ✅ Handle bullet points ONLY (avoid touching section headers)
     formatted = formatted.replace(/(?:<div class="section">.*?<\/div>\s*)?- (.*)/gm, "<li>$1</li>");
