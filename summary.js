@@ -1,38 +1,26 @@
 window.addEventListener("DOMContentLoaded", () => {
+    alert("⏳ Loading summary...");
+  
     const params = new URLSearchParams(window.location.search);
     const summary = params.get("summary") || "No summary found.";
     const outputEl = document.getElementById("output");
     const copyBtn = document.getElementById("copyBtn");
     const downloadBtn = document.getElementById("downloadBtn");
     const pdfBtn = document.getElementById("pdfBtn");
-    const spinner = document.getElementById("loadingSpinner");
-
-
-    // Show spinner, hide output
-    spinner.style.display = "block";
-    outputEl.style.display = "none";
-
-    // Simulate loading delay (optional)
-      setTimeout(() => {
   
     // ✅ Format and display the summary
     outputEl.innerHTML = summary
-    .replace(/^### Pros/gm, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
-    .replace(/^### Cons/gm, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
-    .replace(/^### Red Flags/gm, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")      // bold markdown
-    .replace(/^- (.*)/gm, "<li>$1</li>")                   // bullet list
-    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");           // wrap in <ul>
-
-    // Hide spinner, show content
-    spinner.style.display = "none";
-    outputEl.style.display = "block";
-     }, 500); // Feel free to adjust timing
+      .replace(/^### Pros/gm, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
+      .replace(/^### Cons/gm, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
+      .replace(/^### Red Flags/gm, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/^- (.*)/gm, "<li>$1</li>")
+      .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
   
     // ✅ Copy to clipboard
     copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(summary).then(() => {
-        alert("Summary copied to clipboard!");
+        alert("✅ Summary copied to clipboard!");
       });
     });
   
@@ -62,10 +50,5 @@ window.addEventListener("DOMContentLoaded", () => {
         console.error("jsPDF Error:", err);
       }
     });
-
-    document.getElementById("loadingSpinner").style.display = "block";
-    // after fetch:
-    document.getElementById("loadingSpinner").style.display = "none";
-
   });
   
