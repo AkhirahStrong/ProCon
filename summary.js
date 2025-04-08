@@ -6,7 +6,14 @@ window.addEventListener("DOMContentLoaded", () => {
     const downloadBtn = document.getElementById("downloadBtn");
     const pdfBtn = document.getElementById("pdfBtn");
   
-    outputEl.textContent = summary;
+    // ✅ Format and display the summary
+    outputEl.innerHTML = summary
+      .replace(/\*\*\*(.*?)\*\*\*/g, "<h3>$1</h3>")        // ### Heading
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")    // **Bold**
+      .replace(/- /g, "<li>")                              // Bullets
+      .replace(/\n/g, "</li><li>")                         // Line breaks
+      .replace(/<\/li><li>$/, "</li>")                     // Tidy up
+      .replace(/^<li>/, "<ul><li>") + "</li></ul>";        // Wrap in <ul>
   
     // ✅ Copy to clipboard
     copyBtn.addEventListener("click", () => {
@@ -26,22 +33,20 @@ window.addEventListener("DOMContentLoaded", () => {
   
     // ✅ Download as PDF
     pdfBtn.addEventListener("click", () => {
-        try {
-          if (!window.jspdf || !window.jspdf.jsPDF) {
-            alert("PDF generator not loaded. Please try again in a few seconds.");
-            return;
-          }
-      
-          const doc = new window.jspdf.jsPDF();
-          const lines = doc.splitTextToSize(summary, 180);
-          doc.text(lines, 15, 20);
-          doc.save("ProCon_Summary.pdf");
-      
-        } catch (err) {
-          alert("PDF generation failed.");
-          console.error("jsPDF Error:", err);
+      try {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+          alert("PDF generator not loaded. Please try again in a few seconds.");
+          return;
         }
-      });
-      
+  
+        const doc = new window.jspdf.jsPDF();
+        const lines = doc.splitTextToSize(summary, 180);
+        doc.text(lines, 15, 20);
+        doc.save("ProCon_Summary.pdf");
+      } catch (err) {
+        alert("PDF generation failed.");
+        console.error("jsPDF Error:", err);
+      }
+    });
   });
   
