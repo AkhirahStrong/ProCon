@@ -26,14 +26,24 @@ async function callChatGPT(text) {
 // When a context menu item is clicked
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "analyzePrivacy") {
+    // 🔹 Immediately show "Processing..." on the current tab
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        const output = document.getElementById("output");
+        if (output) output.innerText = "⏳ Processing your request...";
+      }
+    });
+
     const selectedText = info.selectionText;
 
-    // Call your backend
+    // 🔹 Call your backend
     const result = await callChatGPT(selectedText);
 
-    // Show summary in a new tab
+    // 🔹 Open summary page with result
     chrome.tabs.create({
       url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
     });
   }
 });
+
