@@ -55,7 +55,8 @@ body {
   
   ul {
     padding-left: 1.5em;
-    /* list-style-type: disc; */
+    margin-top: 0.5em;
+    margin-bottom: 1.2em;
   }
   
   li {
@@ -66,6 +67,8 @@ body {
   h3 {
     margin-top: 1.2em;
     font-size: 1.2em;
-    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
   }
   

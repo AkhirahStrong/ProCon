@@ -7,13 +7,14 @@ window.addEventListener("DOMContentLoaded", () => {
     const pdfBtn = document.getElementById("pdfBtn");
   
     // ✅ Format and display the summary
-    // ✅ Format and display the summary
     outputEl.innerHTML = summary
-       .replace(/\*\*\*(.*?)\*\*\*/g, "<h3>$1</h3>")          // ### Headings
-       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")      // **Bold**
-       .replace(/^- (.*)/gm, "<li>$1</li>")                   // ONLY bullet lines
-       .replace(/(<li>.*<\/li>)/g, "<ul>$1</ul>");            // Wrap <li> with <ul>
-
+    .replace(/^### Pros/gm, "🟢 <h3>Pros</h3>")           // Green dot icon
+    .replace(/^### Cons/gm, "🟠 <h3>Cons</h3>")           // Orange dot icon
+    .replace(/^### Red Flags/gm, "🔴 <h3>Red Flags</h3>") // Red dot icon
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")     // Bold markdown
+    .replace(/^- (.*)/gm, "<li>$1</li>")                  // Bullet points
+    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");          // Wrap bullets in list
+  
   
     // ✅ Copy to clipboard
     copyBtn.addEventListener("click", () => {
