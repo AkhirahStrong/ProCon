@@ -25,11 +25,11 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   
     // ✅ Download as PDF
-    pdfBtn.addEventListener("click", async () => {
+    pdfBtn.addEventListener("click", () => {
         try {
           if (!window.jspdf || !window.jspdf.jsPDF) {
-            const module = await import("https://jspdf.libnpm.dev");
-            window.jspdf = module; // This exposes jsPDF correctly
+            alert("PDF generator not loaded. Please try again in a few seconds.");
+            return;
           }
       
           const doc = new window.jspdf.jsPDF();
@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
           doc.save("ProCon_Summary.pdf");
       
         } catch (err) {
-          alert("PDF generator failed to load. Try again later.");
+          alert("PDF generation failed.");
           console.error("jsPDF Error:", err);
         }
       });
