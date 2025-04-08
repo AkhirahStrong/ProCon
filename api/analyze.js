@@ -1,11 +1,17 @@
 export default async function handler(req, res) {
 
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
     try {
       const { selectedText } = req.body;
   
       if (!selectedText) {
         return res.status(400).json({ error: "Missing selected text." });
       }
+
+      
   
       const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
@@ -18,7 +24,7 @@ export default async function handler(req, res) {
           messages: [
             {
               role: "system",
-              content: "You are a privacy policy analyst. Break down privacy agreements into pros, cons, and red flags."
+              content: "You are a privacy policy analyst. Break down privacy agreements into clear pros, cons, and red flags using bullet points or headers. Be detailed and unbiased."
             },
             {
               role: "user",
@@ -37,7 +43,8 @@ export default async function handler(req, res) {
       }
   
     } catch (error) {
-      console.error("Error:", error);
+      console.error("OpenAI API error:", error);
+      // console.error("Error:", error);
       res.status(500).json({ error: "Internal server error." });
     }
   }

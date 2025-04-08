@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://pro-71ktfukq1-akhirahs-projects.vercel.app/";
+const BACKEND_URL = "https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/analyze";
 
 // This runs when extension is installed
 
