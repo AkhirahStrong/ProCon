@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
     outputEl.innerHTML = summary
       .replace(/\*\*\*(.*?)\*\*\*/g, "<h3>$1</h3>")        // ### Heading
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")    // **Bold**
-      .replace(/- /g, "<li>")                              // Bullets
+    //   .replace(/- /g, "<li>")                              // Bullets
       .replace(/\n/g, "</li><li>")                         // Line breaks
       .replace(/<\/li><li>$/, "</li>")                     // Tidy up
       .replace(/^<li>/, "<ul><li>") + "</li></ul>";        // Wrap in <ul>
