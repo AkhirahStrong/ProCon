@@ -25,16 +25,23 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   
     // ✅ Download as PDF
-    pdfBtn.addEventListener("click", () => {
-        if (!window.jspdf) {
-          alert("PDF generator not loaded. Please try again in a few seconds.");
-          return;
-        }
+    pdfBtn.addEventListener("click", async () => {
+        try {
+          if (!window.jspdf || !window.jspdf.jsPDF) {
+            const module = await import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+            window.jspdf = module.jspdf; // Assign it globally
+          }
       
-        const doc = new window.jspdf.jsPDF();
-        const lines = doc.splitTextToSize(summary, 180);
-        doc.text(lines, 15, 20);
-        doc.save("ProCon_Summary.pdf");
+          const doc = new window.jspdf.jsPDF();
+          const lines = doc.splitTextToSize(summary, 180);
+          doc.text(lines, 15, 20);
+          doc.save("ProCon_Summary.pdf");
+      
+        } catch (err) {
+          alert("PDF generator failed to load. Try again later.");
+          console.error("jsPDF Error:", err);
+        }
       });
+      
   });
   
