@@ -72,3 +72,35 @@ body {
     gap: 0.5em;
   }
   
+  .section {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-top: 1.5em;
+    font-size: 1.2em;
+  }
+  
+  .icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .icon.green {
+    background-color: limegreen;
+  }
+  
+  .icon.orange {
+    background-color: orange;
+  }
+  
+  .icon.red {
+    background-color: crimson;
+  }
+  
+  ul {
+    margin: 0.5em 0 1.2em 1.2em;
+    padding-left: 1em;
+  }
+  

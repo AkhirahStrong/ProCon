@@ -8,12 +8,13 @@ window.addEventListener("DOMContentLoaded", () => {
   
     // ✅ Format and display the summary
     outputEl.innerHTML = summary
-    .replace(/^### Pros/gm, "🟢 <h3>Pros</h3>")           // Green dot icon
-    .replace(/^### Cons/gm, "🟠 <h3>Cons</h3>")           // Orange dot icon
-    .replace(/^### Red Flags/gm, "🔴 <h3>Red Flags</h3>") // Red dot icon
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")     // Bold markdown
-    .replace(/^- (.*)/gm, "<li>$1</li>")                  // Bullet points
-    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");          // Wrap bullets in list
+    .replace(/^### Pros/gm, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
+    .replace(/^### Cons/gm, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
+    .replace(/^### Red Flags/gm, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")      // bold markdown
+    .replace(/^- (.*)/gm, "<li>$1</li>")                   // bullet list
+    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");           // wrap in <ul>
+  
   
   
     // ✅ Copy to clipboard
