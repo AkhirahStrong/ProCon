@@ -21,3 +21,15 @@ downloadBtn.addEventListener("click", () => {
   link.download = "ProCon_Summary.txt";
   link.click();
 });
+
+const pdfBtn = document.getElementById("pdfBtn");
+
+pdfBtn.addEventListener("click", async () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const lines = doc.splitTextToSize(summary, 180); // Wrap text
+  doc.text(lines, 15, 20);
+  doc.save("ProCon_Summary.pdf");
+});
+
