@@ -5,6 +5,15 @@ window.addEventListener("DOMContentLoaded", () => {
     const copyBtn = document.getElementById("copyBtn");
     const downloadBtn = document.getElementById("downloadBtn");
     const pdfBtn = document.getElementById("pdfBtn");
+    const spinner = document.getElementById("loadingSpinner");
+
+
+    // Show spinner, hide output
+    spinner.style.display = "block";
+    outputEl.style.display = "none";
+
+    // Simulate loading delay (optional)
+      setTimeout(() => {
   
     // ✅ Format and display the summary
     outputEl.innerHTML = summary
@@ -14,8 +23,11 @@ window.addEventListener("DOMContentLoaded", () => {
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")      // bold markdown
     .replace(/^- (.*)/gm, "<li>$1</li>")                   // bullet list
     .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");           // wrap in <ul>
-  
-  
+
+    // Hide spinner, show content
+    spinner.style.display = "none";
+    outputEl.style.display = "block";
+     }, 500); // Feel free to adjust timing
   
     // ✅ Copy to clipboard
     copyBtn.addEventListener("click", () => {
