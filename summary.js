@@ -26,11 +26,15 @@ window.addEventListener("DOMContentLoaded", () => {
   
     // ✅ Download as PDF
     pdfBtn.addEventListener("click", () => {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const lines = doc.splitTextToSize(summary, 180);
-      doc.text(lines, 15, 20);
-      doc.save("ProCon_Summary.pdf");
-    });
+        if (!window.jspdf) {
+          alert("PDF generator not loaded. Please try again in a few seconds.");
+          return;
+        }
+      
+        const doc = new window.jspdf.jsPDF();
+        const lines = doc.splitTextToSize(summary, 180);
+        doc.text(lines, 15, 20);
+        doc.save("ProCon_Summary.pdf");
+      });
   });
   
