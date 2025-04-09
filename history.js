@@ -1,86 +1,86 @@
 window.addEventListener("DOMContentLoaded", () => {
-
   const container = document.getElementById("history");
+  const clearBtn = document.getElementById("clearBtn");
+  const exportTxtBtn = document.getElementById("exportTxt");
+  const exportPdfBtn = document.getElementById("exportPdf");
+  const themeToggle = document.getElementById("themeToggle");
 
-    // Dark mode toggle
-    document.getElementById("themeToggle").addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-    });
-
-    // Load saved theme on page load
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
-    }
-  
-    // Export all as TXT
-document.getElementById("exportTxt").addEventListener("click", () => {
-  chrome.storage.local.get({ history: [] }, (data) => {
-    if (data.history.length === 0) {
-      alert("❌ No summaries to export.");
-      return;
-    }
-
-    const allText = data.history.map(entry => {
-      const date = new Date(entry.timestamp).toLocaleString();
-      return `📅 ${date}\n\n${entry.summary}\n\n---\n`;
-    }).join("");
-
-    const blob = new Blob([allText], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "ProCon_All_Summaries.txt";
-    link.click();
+  // ✅ Dark mode toggle
+  themeToggle?.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
   });
-});
 
-  // Export all as PDF
-  document.getElementById("exportPdf").addEventListener("click", () => {
-    chrome.storage.local.get({ history: [] }, async (data) => {
-      if (data.history.length === 0) {
-        alert("❌ No summaries to export.");
-        return;
-      }
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+  }
 
-      // Wait until jspdf is available
-    const checkLoaded = () =>
-      new Promise((resolve, reject) => {
-        let tries = 0;
-        const interval = setInterval(() => {
-          if (window.jspdf && window.jspdf.jsPDF) {
-            clearInterval(interval);
-            resolve(window.jspdf.jsPDF);
-          } else if (tries > 10) {
-            clearInterval(interval);
-            reject("PDF generator not loaded. Try again.");
-          }
-          tries++;
-        }, 200);
-      });
+  // ✅ Export All as TXT
+  exportTxtBtn?.addEventListener("click", () => {
+    chrome.storage.local.get({ history: [] }, (data) => {
+      if (data.history.length === 0) return alert("❌ No summaries to export.");
 
-    try {
-      const jsPDF = await checkLoaded();
-      const doc = new jsPDF();
-
-      data.history.forEach((entry, index) => {
+      const text = data.history.map(entry => {
         const date = new Date(entry.timestamp).toLocaleString();
-        const text = `📅 ${date}\n\n${entry.summary}`;
-        const lines = doc.splitTextToSize(text, 180);
-        doc.text(lines, 15, 20);
+        return `📅 ${date}\n\n${entry.summary}\n\n---\n`;
+      }).join("");
 
-        if (index < data.history.length - 1) {
-          doc.addPage();
-        }
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ProCon_All_Summaries.txt";
+      link.click();
+    });
+  });
+
+  // ✅ Export All as PDF
+  exportPdfBtn?.addEventListener("click", async () => {
+    chrome.storage.local.get({ history: [] }, async (data) => {
+      if (data.history.length === 0) return alert("❌ No summaries to export.");
+
+      const checkLoaded = () =>
+        new Promise((resolve, reject) => {
+          let tries = 0;
+          const interval = setInterval(() => {
+            if (window.jspdf?.jsPDF) {
+              clearInterval(interval);
+              resolve(window.jspdf.jsPDF);
+            } else if (++tries > 10) {
+              clearInterval(interval);
+              reject("PDF generator not loaded. Try again.");
+            }
+          }, 200);
+        });
+
+      try {
+        const jsPDF = await checkLoaded();
+        const doc = new jsPDF();
+
+        data.history.forEach((entry, index) => {
+          const date = new Date(entry.timestamp).toLocaleString();
+          const text = `📅 ${date}\n\n${entry.summary}`;
+          const lines = doc.splitTextToSize(text, 180);
+          doc.text(lines, 15, 20);
+          if (index < data.history.length - 1) doc.addPage();
+        });
+
+        doc.save("ProCon_All_Summaries.pdf");
+      } catch (err) {
+        alert(err);
+      }
+    });
+  });
+
+  // ✅ Handle Clear History
+  clearBtn?.addEventListener("click", () => {
+    if (confirm("⚠️ Are you sure you want to clear all history?")) {
+      chrome.storage.local.set({ history: [] }, () => {
+        container.innerHTML = "<p>History cleared.</p>";
       });
-
-      doc.save("ProCon_All_Summaries.pdf");
-    } catch (err) {
-      alert(err);
-      console.error("PDF Error:", err);
     }
   });
-});
 
+  // ✅ Load history and render entries
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
     return;
@@ -92,35 +92,26 @@ document.getElementById("exportTxt").addEventListener("click", () => {
       return;
     }
 
-    container.innerHTML = data.history.reverse().map(entry => {
-      // Split into lines and build HTML
+    const entriesHtml = data.history.reverse().map((entry, index) => {
       const lines = entry.summary.split("\n");
       let html = "";
       let currentListClass = "";
       let listOpen = false;
 
-
-
       lines.forEach(line => {
         if (line.startsWith("### Pros")) {
-          if (listOpen) {
-            html += "</ul>";
-            listOpen = false;
-          }
+          if (listOpen) html += "</ul>";
+          listOpen = false;
           currentListClass = "pros";
           html += `<h3 class="section-title">✔️ Pros</h3>`;
         } else if (line.startsWith("### Cons")) {
-          if (listOpen) {
-            html += "</ul>";
-            listOpen = false;
-          }
+          if (listOpen) html += "</ul>";
+          listOpen = false;
           currentListClass = "cons";
           html += `<h3 class="section-title">⚠️ Cons</h3>`;
         } else if (line.startsWith("### Red Flags")) {
-          if (listOpen) {
-            html += "</ul>";
-            listOpen = false;
-          }
+          if (listOpen) html += "</ul>";
+          listOpen = false;
           currentListClass = "redflags";
           html += `<h3 class="section-title">🚫 Red Flags</h3>`;
         } else if (line.startsWith("- ")) {
@@ -130,36 +121,38 @@ document.getElementById("exportTxt").addEventListener("click", () => {
           }
           html += `<li>${line.slice(2)}</li>`;
         } else {
-          if (listOpen) {
-            html += "</ul>";
-            listOpen = false;
-          }
+          if (listOpen) html += "</ul>";
+          listOpen = false;
           html += `<p>${line}</p>`;
         }
       });
-
       if (listOpen) html += "</ul>";
 
-      const clearBtn = document.getElementById("clearBtn");
+      const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
 
       return `
-        <div class="card">
-          <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}</div>
+        <div class="card" data-index="${index}">
+          <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}
+            <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+          </div>
           <div class="summary">${html}</div>
         </div>
       `;
     }).join("");
 
+    container.innerHTML = entriesHtml;
 
-    clearBtn?.addEventListener("click", () => {
-      if (confirm("⚠️ Are you sure you want to clear all history?")) {
-        chrome.storage.local.set({ history: [] }, () => {
-          container.innerHTML = "<p>History cleared.</p>";
+    // ✅ Add click event to all bookmark buttons
+    document.querySelectorAll(".bookmark-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.dataset.index);
+        chrome.storage.local.get({ history: [] }, (data) => {
+          const updated = [...data.history];
+          const realIndex = data.history.length - 1 - i; // since we reversed
+          updated[realIndex].bookmarked = !updated[realIndex].bookmarked;
+          chrome.storage.local.set({ history: updated }, () => location.reload());
         });
-      }
-
-     
-  
+      });
     });
   });
 });

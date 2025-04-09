@@ -344,3 +344,18 @@ body.dark #themeToggle {
   justify-content: flex-end;
 }
 
+
+/* bookmark */
+
+.bookmark-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
+.bookmark-btn:hover {
+  opacity: 0.7;
+}
+

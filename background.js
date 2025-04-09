@@ -51,7 +51,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
     // ✅ Save to history
     const timestamp = new Date().toISOString();
-    const newEntry = { summary: result, timestamp };
+    const newEntry = { summary: result, timestamp, bookmarked: false };
 
     chrome.storage.local.get({ history: [] }, (data) => {
       const updated = [...data.history, newEntry];
