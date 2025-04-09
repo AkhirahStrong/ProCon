@@ -41,29 +41,30 @@ document.getElementById("exportTxt").addEventListener("click", () => {
         alert("❌ No summaries to export.");
         return;
       }
-
+  
       const { jsPDF } = window.jspdf || {};
-
-      if (!window.jspdf || !window.jspdf.jsPDF) {
+      if (!jsPDF) {
         alert("PDF generator not loaded. Try again.");
         return;
       }
   
-      const doc = new window.jspdf.jsPDF();
+      const doc = new jsPDF(); // ✅ use destructured jsPDF
+  
       data.history.forEach((entry, index) => {
         const date = new Date(entry.timestamp).toLocaleString();
         const text = `📅 ${date}\n\n${entry.summary}`;
         const lines = doc.splitTextToSize(text, 180);
-        doc.text(lines, 15, 20 + index * 80); // simple vertical offset
+        doc.text(lines, 15, 20);
   
         if (index < data.history.length - 1) {
           doc.addPage();
         }
       });
-
+  
       doc.save("ProCon_All_Summaries.pdf");
     });
   });
+  
 
 
 
