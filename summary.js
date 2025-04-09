@@ -8,25 +8,25 @@ window.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("downloadBtn");
   const pdfBtn = document.getElementById("pdfBtn");
 
-  // ✅ Format once
-  const formatted = summary
-    .replace(/^### Pros/gm, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
-    .replace(/^### Cons/gm, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
-    .replace(/^### Red Flags/gm, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/^- (.*)/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
+  // 🟢 Clean formatting
+  let formatted = summary
+    .replace(/### Pros/g, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
+    .replace(/### Cons/g, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
+    .replace(/### Red Flags/g, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")        // bold markdown
+    .replace(/^- (.*)/gm, "<li>$1</li>")                     // bullets
+    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");             // wrap all <li>s in <ul>
 
   outputEl.innerHTML = formatted;
 
-  // Copy to clipboard
+  // ✅ Copy
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(summary).then(() => {
       alert("✅ Summary copied to clipboard!");
     });
   });
 
-  // Download TXT
+  // ✅ TXT Download
   downloadBtn.addEventListener("click", () => {
     const blob = new Blob([summary], { type: "text/plain" });
     const link = document.createElement("a");
@@ -35,11 +35,11 @@ window.addEventListener("DOMContentLoaded", () => {
     link.click();
   });
 
-  // Download PDF
+  // ✅ PDF Download
   pdfBtn.addEventListener("click", () => {
     try {
       if (!window.jspdf || !window.jspdf.jsPDF) {
-        alert("PDF generator not loaded.");
+        alert("PDF generator not loaded. Try again later.");
         return;
       }
 
