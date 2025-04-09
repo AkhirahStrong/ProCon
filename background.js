@@ -38,7 +38,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (text) => {
-        alert(`\u23F3 Analyzing:\n\n"${text}"`);
+        alert(`⏳ Analyzing:\n\n"${text}"`);
       },
       args: [selectedText]
     });
@@ -59,12 +59,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     chrome.tabs.create({
       url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
     });
-  }
 
-  // 🔹 Handle view history separately
-  if (info.menuItemId === "viewHistory") {
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("history.html")
-    });
   }
+  // Optional: if you add a second context menu for history
+if (info.menuItemId === "viewHistory") {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL("history.html")
+  });
+
+}
 });
