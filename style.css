@@ -163,7 +163,7 @@ body {
   color: #333;
 }
 
-ul.pros .bullet-point::before {
+/* ul.pros .bullet-point::before {
   color: limegreen;
 }
 ul.cons .bullet-point::before {
@@ -171,6 +171,23 @@ ul.cons .bullet-point::before {
 }
 ul.redflags .bullet-point::before {
   color: crimson;
+} */
+
+ul.pros li::marker {
+  color: limegreen;
+}
+ul.cons li::marker {
+  color: orange;
+}
+ul.redflags li::marker {
+  color: crimson;
+}
+
+/* Optional: bullets inside the box properly */
+ul.pros, ul.cons, ul.redflags {
+  padding-left: 1.5em;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
 }
 
 

@@ -13,56 +13,57 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     container.innerHTML = data.history.reverse().map(entry => {
-      // 1. Format sections
-      let formatted = entry.summary
-        .replace(/^### Pros/gm, `<h3 class="section-title">✔️ Pros</h3>`)
-        .replace(/^### Cons/gm, `<h3 class="section-title">⚠️ Cons</h3>`)
-        .replace(/^### Red Flags/gm, `<h3 class="section-title">🚫 Red Flags</h3>`);
+      // Split into lines and build HTML
+      const lines = entry.summary.split("\n");
+      let html = "";
+      let currentListClass = "";
+      let listOpen = false;
 
-      // 2. Handle list items
-      // Break into lines and rebuild manually
-      const lines = formatted.split('\n');
-let rebuilt = '';
-let inList = false;
-let currentSection = '';
+      lines.forEach(line => {
+        if (line.startsWith("### Pros")) {
+          if (listOpen) {
+            html += "</ul>";
+            listOpen = false;
+          }
+          currentListClass = "pros";
+          html += `<h3 class="section-title">✔️ Pros</h3>`;
+        } else if (line.startsWith("### Cons")) {
+          if (listOpen) {
+            html += "</ul>";
+            listOpen = false;
+          }
+          currentListClass = "cons";
+          html += `<h3 class="section-title">⚠️ Cons</h3>`;
+        } else if (line.startsWith("### Red Flags")) {
+          if (listOpen) {
+            html += "</ul>";
+            listOpen = false;
+          }
+          currentListClass = "redflags";
+          html += `<h3 class="section-title">🚫 Red Flags</h3>`;
+        } else if (line.startsWith("- ")) {
+          if (!listOpen) {
+            html += `<ul class="${currentListClass}">`;
+            listOpen = true;
+          }
+          html += `<li>${line.slice(2)}</li>`;
+        } else {
+          if (listOpen) {
+            html += "</ul>";
+            listOpen = false;
+          }
+          html += `<p>${line}</p>`;
+        }
+      });
 
-lines.forEach(line => {
-  if (/^### (Pros|Cons|Red Flags)/.test(line)) {
-    const section = line.match(/^### (Pros|Cons|Red Flags)/)[1];
-    currentSection = section.toLowerCase().replace(' ', '');
-
-    let icon = '';
-    if (section === 'Pros') icon = '✔️';
-    else if (section === 'Cons') icon = '⚠️';
-    else if (section === 'Red Flags') icon = '🚫';
-
-    rebuilt += `<h3 class="section-title">${icon} ${section}</h3>`;
-  } else if (/^- /.test(line)) {
-    if (!inList) {
-      rebuilt += `<ul class="${currentSection}">`;
-      inList = true;
-    }
-    rebuilt += `<li class="bullet-point">${line.replace(/^- /, '')}</li>`;
-  } else {
-    if (inList) {
-      rebuilt += '</ul>';
-      inList = false;
-    }
-    rebuilt += `<p>${line}</p>`;
-  }
-});
-
-if (inList) rebuilt += '</ul>';
-
+      if (listOpen) html += "</ul>";
 
       return `
         <div class="card">
           <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}</div>
-          <div class="summary">${rebuilt}</div>
+          <div class="summary">${html}</div>
         </div>
       `;
     }).join("");
   });
 });
-
-
