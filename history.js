@@ -36,37 +36,50 @@ document.getElementById("exportTxt").addEventListener("click", () => {
 
   // Export all as PDF
   document.getElementById("exportPdf").addEventListener("click", () => {
-    chrome.storage.local.get({ history: [] }, (data) => {
+    chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) {
         alert("❌ No summaries to export.");
         return;
       }
 
-      const { jsPDF } = window.jspdf || {};
+      // Wait until jspdf is available
+    const checkLoaded = () =>
+      new Promise((resolve, reject) => {
+        let tries = 0;
+        const interval = setInterval(() => {
+          if (window.jspdf && window.jspdf.jsPDF) {
+            clearInterval(interval);
+            resolve(window.jspdf.jsPDF);
+          } else if (tries > 10) {
+            clearInterval(interval);
+            reject("PDF generator not loaded. Try again.");
+          }
+          tries++;
+        }, 200);
+      });
 
-      if (!jsPDF) {
-        alert("PDF generator not loaded. Try again.");
-        return;
-      }
-      
+    try {
+      const jsPDF = await checkLoaded();
       const doc = new jsPDF();
 
       data.history.forEach((entry, index) => {
         const date = new Date(entry.timestamp).toLocaleString();
         const text = `📅 ${date}\n\n${entry.summary}`;
         const lines = doc.splitTextToSize(text, 180);
-        doc.text(lines, 15, 20 + index * 80); // simple vertical offset
-  
+        doc.text(lines, 15, 20);
+
         if (index < data.history.length - 1) {
           doc.addPage();
         }
       });
 
       doc.save("ProCon_All_Summaries.pdf");
-    });
+    } catch (err) {
+      alert(err);
+      console.error("PDF Error:", err);
+    }
   });
-
-
+});
 
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
