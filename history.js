@@ -13,12 +13,17 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     container.innerHTML = data.history.reverse().map(entry => {
-      const formatted = entry.summary
-        .replace(/^### Pros/gm, `<h3 class="section-title">✔️ Pros</h3>`)
-        .replace(/^### Cons/gm, `<h3 class="section-title">⚠️ Cons</h3>`)
-        .replace(/^### Red Flags/gm, `<h3 class="section-title">🚫 Red Flags</h3>`)
-        .replace(/^- (.*)/gm, `<li class="bullet-point">$1</li>`)
-        .replace(/(<li.*<\/li>)/gs, "<ul>$1</ul>");
+      let formatted = entry.summary
+      .replace(/^### Pros/gm, `<h3 class="section-title">✔️ Pros</h3>`)
+      .replace(/^### Cons/gm, `<h3 class="section-title">⚠️ Cons</h3>`)
+      .replace(/^### Red Flags/gm, `<h3 class="section-title">🚫 Red Flags</h3>`)
+      .replace(/^- (.*)/gm, `<li class="bullet-point">$1</li>`);
+
+      // ✅ Wrap each list in <ul>
+      formatted = formatted.replace(/(<li class="bullet-point">[\s\S]*?<\/li>)/g, match => {
+        return `<ul>${match}</ul>`;
+      });
+
 
       return `
         <div class="card">
