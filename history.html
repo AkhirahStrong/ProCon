@@ -4,12 +4,54 @@
     <meta charset="UTF-8" />
     <title>ProCon History</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      .entry {
+        border-bottom: 1px solid #ddd;
+        padding: 1em 0;
+      }
+      .timestamp {
+        color: #888;
+        font-size: 0.9em;
+        margin-bottom: 0.5em;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-      <h1>📜 Analysis History</h1>
-      <div id="history" class="scroll-box">Loading history...</div>
+      <h1>📜 ProCon History</h1>
+      <div id="history">Loading history...</div>
     </div>
-    <script src="history.js"></script>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        if (!chrome?.storage?.local) {
+          document.getElementById("history").innerText =
+            "This page must be opened through the Chrome extension.";
+          return;
+        }
+
+        chrome.storage.local.get({ history: [] }, (data) => {
+          const container = document.getElementById("history");
+          if (data.history.length === 0) {
+            container.innerHTML = "<p>No history yet.</p>";
+            return;
+          }
+
+          container.innerHTML = data.history
+            .reverse()
+            .map(
+              (entry) => `
+                <div class="entry">
+                  <div class="timestamp">🕒 ${new Date(
+                    entry.timestamp
+                  ).toLocaleString()}</div>
+                  <pre>${entry.summary}</pre>
+                </div>
+              `
+            )
+            .join("");
+        });
+      });
+    </script>
   </body>
 </html>
