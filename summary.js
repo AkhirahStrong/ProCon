@@ -2,16 +2,16 @@ window.addEventListener("DOMContentLoaded", () => {
   alert("⏳ Loading summary...");
 
   // 🔄 Load saved language
-   const langSelector = document.getElementById("languageSelect");
-   if (langSelector) {
-     chrome.storage.local.get("lang", (data) => {
-       langSelector.value = data.lang || "en";
-     });
+  //  const langSelector = document.getElementById("languageSelect");
+  //  if (langSelector) {
+  //    chrome.storage.local.get("lang", (data) => {
+  //      langSelector.value = data.lang || "en";
+  //    });
 
-     langSelector.addEventListener("change", () => {
-    chrome.storage.local.set({ lang: langSelector.value });
-     });
-   }
+  //    langSelector.addEventListener("change", () => {
+  //   chrome.storage.local.set({ lang: langSelector.value });
+  //    });
+  //  }
 
 
   const params = new URLSearchParams(window.location.search);
