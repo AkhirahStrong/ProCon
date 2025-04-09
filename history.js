@@ -14,7 +14,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = data.history.reverse().map(entry => {
       // Split into lines and build HTML
-      // const lines = entry.summary.split("\n");
+      const lines = entry.summary.split("\n");
       let html = "";
       let currentListClass = "";
       let listOpen = false;

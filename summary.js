@@ -15,9 +15,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Format section headers with icons
   const formatted = safeSummary
-    .replace(/^### Pros/gm, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
-    .replace(/^### Cons/gm, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
-    .replace(/^### Red Flags/gm, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
+    .replace(/^## Pros/gm, `<div class="section"><span class="icon green"></span><h3>Pros</h3></div>`)
+    .replace(/^## Cons/gm, `<div class="section"><span class="icon orange"></span><h3>Cons</h3></div>`)
+    .replace(/^## Red Flags/gm, `<div class="section"><span class="icon red"></span><h3>Red Flags</h3></div>`)
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // bold
     .replace(/^- (.*)/gm, "<li>$1</li>")              // bullet
     .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");       // wrap in ul
