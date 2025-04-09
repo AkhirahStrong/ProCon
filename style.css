@@ -83,12 +83,12 @@ body {
     font-size: 1.2em;
   }
   
-  /* .icon {
+  .icon {
     width: 12px;
     height: 12px;
     border-radius: 50%;
     display: inline-block;
-  } */
+  }
   
   .icon.green {
     background-color: limegreen;
