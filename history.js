@@ -13,10 +13,11 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     container.innerHTML = data.history.reverse().map(entry => `
-      <div class="entry">
-        <div class="timestamp">🗓️ ${new Date(entry.timestamp).toLocaleString()}</div>
-        <pre>${entry.summary}</pre>
+      <div class="card">
+        <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}</div>
+        <div class="summary">${entry.summary.replace(/\n/g, "<br>")}</div>
       </div>
     `).join("");
   });
 });
+
