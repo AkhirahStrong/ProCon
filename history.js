@@ -20,9 +20,11 @@ window.addEventListener("DOMContentLoaded", () => {
       .replace(/^- (.*)/gm, `<li class="bullet-point">$1</li>`);
 
       // ✅ Wrap each list in <ul>
-      formatted = formatted.replace(/(<li class="bullet-point">[\s\S]*?<\/li>)/g, match => {
-        return `<ul>${match}</ul>`;
-      });
+      formatted = formatted.replace(
+        /((?:<li class="bullet-point">.*?<\/li>\s*)+)/g,
+        match => `<ul>${match}</ul>`
+      );
+      
 
 
       return `
