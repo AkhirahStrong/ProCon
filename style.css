@@ -222,4 +222,54 @@ ul.pros, ul.cons, ul.redflags {
   background-color: #b02a37;
 }
 
+/* Mobile views */
+
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .timestamp {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  .summary p,
+  .summary li {
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  ul {
+    padding-left: 1rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .scroll-box {
+    max-height: 60vh;
+    overflow-y: auto;
+    word-wrap: break-word;
+  }
+  
+}
+
+
 
