@@ -22,25 +22,38 @@ window.addEventListener("DOMContentLoaded", () => {
       // 2. Handle list items
       // Break into lines and rebuild manually
       const lines = formatted.split('\n');
-      let rebuilt = '';
-      let inList = false;
+let rebuilt = '';
+let inList = false;
+let currentSection = '';
 
-      lines.forEach(line => {
-        if (/^- /.test(line)) {
-          if (!inList) {
-            rebuilt += '<ul>';
-            inList = true;
-          }
-          rebuilt += `<li class="bullet-point">${line.replace(/^- /, '')}</li>`;
-        } else {
-          if (inList) {
-            rebuilt += '</ul>';
-            inList = false;
-          }
-          rebuilt += `<p>${line}</p>`;
-        }
-      });
-      if (inList) rebuilt += '</ul>';
+lines.forEach(line => {
+  if (/^### (Pros|Cons|Red Flags)/.test(line)) {
+    const section = line.match(/^### (Pros|Cons|Red Flags)/)[1];
+    currentSection = section.toLowerCase().replace(' ', '');
+
+    let icon = '';
+    if (section === 'Pros') icon = '✔️';
+    else if (section === 'Cons') icon = '⚠️';
+    else if (section === 'Red Flags') icon = '🚫';
+
+    rebuilt += `<h3 class="section-title">${icon} ${section}</h3>`;
+  } else if (/^- /.test(line)) {
+    if (!inList) {
+      rebuilt += `<ul class="${currentSection}">`;
+      inList = true;
+    }
+    rebuilt += `<li class="bullet-point">${line.replace(/^- /, '')}</li>`;
+  } else {
+    if (inList) {
+      rebuilt += '</ul>';
+      inList = false;
+    }
+    rebuilt += `<p>${line}</p>`;
+  }
+});
+
+if (inList) rebuilt += '</ul>';
+
 
       return `
         <div class="card">

@@ -159,17 +159,18 @@ body {
   font-size: 1.2rem;
   position: absolute;
   left: 0;
-  top: 0;
+  top: 0.1em; /* aligns better with text */
+  color: #333;
 }
 
-.bullet-point.green::before {
+ul.pros .bullet-point::before {
   color: limegreen;
 }
-
-.bullet-point.orange::before {
+ul.cons .bullet-point::before {
   color: orange;
 }
-
-.bullet-point.red::before {
+ul.redflags .bullet-point::before {
   color: crimson;
 }
+
+
