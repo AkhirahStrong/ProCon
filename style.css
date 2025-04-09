@@ -3,6 +3,7 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 2rem;
+    color: #333;
   }
   
   .container {
@@ -271,5 +272,63 @@ ul.pros, ul.cons, ul.redflags {
   
 }
 
+/* Default Light Mode */
+/* body {
+  background-color: #f4f4f4;
+  color: #333;
+} */
+
+/* Dark Mode Styles */
+body.dark {
+  background-color: #1e1e1e;
+  color: #ddd;
+}
+
+body.dark .container {
+  background: #2c2c2c;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
+body.dark .card {
+  background: #2c2c2c;
+  border-color: #444;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.03);
+}
+
+body.dark .timestamp {
+  color: #aaa;
+}
+
+body.dark .section-title {
+  color: #fff;
+}
+
+body.dark button {
+  background-color: #444;
+  color: #fff;
+}
+
+body.dark button:hover {
+  background-color: #666;
+}
+
+/* Toggling */
+
+#themeToggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+body.dark #themeToggle {
+  border-color: #888;
+  color: #eee;
+}
 
 

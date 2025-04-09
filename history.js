@@ -1,5 +1,19 @@
 window.addEventListener("DOMContentLoaded", () => {
+
   const container = document.getElementById("history");
+
+    // Dark mode toggle
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    });
+
+    // Load saved theme on page load
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+    }
+  
+
 
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
@@ -62,9 +76,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const clearBtn = document.getElementById("clearBtn");
 
-      
-
-
       return `
         <div class="card">
           <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}</div>
@@ -80,6 +91,9 @@ window.addEventListener("DOMContentLoaded", () => {
           container.innerHTML = "<p>History cleared.</p>";
         });
       }
+
+     
+  
     });
   });
 });
