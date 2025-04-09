@@ -13,6 +13,56 @@ window.addEventListener("DOMContentLoaded", () => {
       document.body.classList.add("dark");
     }
   
+    // Export all as TXT
+document.getElementById("exportTxt").addEventListener("click", () => {
+  chrome.storage.local.get({ history: [] }, (data) => {
+    if (data.history.length === 0) {
+      alert("❌ No summaries to export.");
+      return;
+    }
+
+    const allText = data.history.map(entry => {
+      const date = new Date(entry.timestamp).toLocaleString();
+      return `📅 ${date}\n\n${entry.summary}\n\n---\n`;
+    }).join("");
+
+    const blob = new Blob([allText], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "ProCon_All_Summaries.txt";
+    link.click();
+  });
+});
+
+  // Export all as PDF
+  document.getElementById("exportPdf").addEventListener("click", () => {
+    chrome.storage.local.get({ history: [] }, (data) => {
+      if (data.history.length === 0) {
+        alert("❌ No summaries to export.");
+        return;
+      }
+
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert("PDF generator not loaded. Try again.");
+        return;
+      }
+  
+      const doc = new window.jspdf.jsPDF();
+      data.history.forEach((entry, index) => {
+        const date = new Date(entry.timestamp).toLocaleString();
+        const text = `📅 ${date}\n\n${entry.summary}`;
+        const lines = doc.splitTextToSize(text, 180);
+        doc.text(lines, 15, 20 + index * 80); // simple vertical offset
+  
+        if (index < data.history.length - 1) {
+          doc.addPage();
+        }
+      });
+
+      doc.save("ProCon_All_Summaries.pdf");
+    });
+  });
+
 
 
   if (!chrome?.storage?.local) {
