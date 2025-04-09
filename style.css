@@ -336,7 +336,7 @@ body.dark #themeToggle {
   color: #eee;
 }
 
-.buttons#exportTxt#exportPdf {
+.buttons #exportTxt #exportPdf {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
