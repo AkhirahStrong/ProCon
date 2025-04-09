@@ -16,13 +16,13 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // API call to your backend
-async function callChatGPT(text) {
+async function callChatGPT(text, lang) {
   const res = await fetch(BACKEND_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ selectedText: text })
+    body: JSON.stringify({ selectedText: text, lang  })
   });
 
   const data = await res.json();
@@ -44,7 +44,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     });
 
     // 🔹 Call your backend
-    const result = await callChatGPT(selectedText);
+    // const result = await callChatGPT(selectedText);
+    const lang = await chrome.storage.local.get("lang").then(res => res.lang || "en");
+    const result = await callChatGPT(selectedText, lang);
+
 
     // ✅ Save to history
     const timestamp = new Date().toISOString();
