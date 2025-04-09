@@ -42,6 +42,8 @@ document.getElementById("exportTxt").addEventListener("click", () => {
         return;
       }
 
+      const { jsPDF } = window.jspdf || {};
+
       if (!window.jspdf || !window.jspdf.jsPDF) {
         alert("PDF generator not loaded. Try again.");
         return;
