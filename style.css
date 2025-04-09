@@ -205,4 +205,21 @@ ul.pros, ul.cons, ul.redflags {
   }
 }
 
+/* Clear history button */
+
+#clearBtn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#clearBtn:hover {
+  background-color: #b02a37;
+}
+
 

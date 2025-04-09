@@ -19,6 +19,8 @@ window.addEventListener("DOMContentLoaded", () => {
       let currentListClass = "";
       let listOpen = false;
 
+
+
       lines.forEach(line => {
         if (line.startsWith("### Pros")) {
           if (listOpen) {
@@ -58,6 +60,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (listOpen) html += "</ul>";
 
+      const clearBtn = document.getElementById("clearBtn");
+
+      
+
+
       return `
         <div class="card">
           <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}</div>
@@ -65,5 +72,14 @@ window.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
     }).join("");
+
+
+    clearBtn?.addEventListener("click", () => {
+      if (confirm("⚠️ Are you sure you want to clear all history?")) {
+        chrome.storage.local.set({ history: [] }, () => {
+          container.innerHTML = "<p>History cleared.</p>";
+        });
+      }
+    });
   });
 });
