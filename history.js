@@ -44,12 +44,13 @@ document.getElementById("exportTxt").addEventListener("click", () => {
 
       const { jsPDF } = window.jspdf || {};
 
-      if (!window.jspdf || !window.jspdf.jsPDF) {
+      if (!jsPDF) {
         alert("PDF generator not loaded. Try again.");
         return;
       }
-  
-      const doc = new window.jspdf.jsPDF();
+      
+      const doc = new jsPDF();
+
       data.history.forEach((entry, index) => {
         const date = new Date(entry.timestamp).toLocaleString();
         const text = `📅 ${date}\n\n${entry.summary}`;
