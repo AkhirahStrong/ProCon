@@ -312,6 +312,11 @@ body.dark button:hover {
   background-color: #666;
 }
 
+body.dark h1 {
+  background-color: #666;
+  color: #fff;
+}
+
 /* Toggling */
 
 #themeToggle {
