@@ -30,7 +30,8 @@
         "summary.js",
         "style.css",
         "history.html",
-        "history.js"
+        "history.js",
+        "jspdf.umd.min.js"
       ],
       "matches": ["<all_urls>"]
     }
