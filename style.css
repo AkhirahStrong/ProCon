@@ -336,4 +336,11 @@ body.dark #themeToggle {
   color: #eee;
 }
 
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: flex-end;
+}
 
