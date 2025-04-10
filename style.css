@@ -121,7 +121,7 @@ body {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     transition: box-shadow 0.3s ease;
     font-family: "Segoe UI", sans-serif;
-    max-width: 800px;
+    max-width: 850px;
     margin: 1rem auto;
 
   }
