@@ -4,11 +4,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const exportTxtBtn = document.getElementById("exportTxt");
   const exportPdfBtn = document.getElementById("exportPdf");
   const themeToggle = document.getElementById("themeToggle");
+  const searchInput = document.getElementById("searchInput");
 
-  let allSummaries = []; // to store full history for filtering
+  let allSummaries = [];
 
-
-  // ✅ Dark mode toggle
+  // Toggle Dark Mode
   themeToggle?.addEventListener("click", () => {
     document.body.classList.toggle("dark");
     localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
@@ -18,11 +18,82 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark");
   }
 
-  // ✅ Export All as TXT
+  // Render Summaries Function
+  function renderSummaries(entries) {
+    if (entries.length === 0) {
+      container.innerHTML = "<p>No history found.</p>";
+      return;
+    }
+
+    const entriesHtml = entries.map((entry, index) => {
+      const lines = entry.summary.split("\n");
+      let html = "";
+      let currentListClass = "";
+      let listOpen = false;
+
+      lines.forEach(line => {
+        if (line.startsWith("### Pros")) {
+          if (listOpen) html += "</ul>";
+          listOpen = false;
+          currentListClass = "pros";
+          html += `<h3 class="section-title">✔️ Pros</h3>`;
+        } else if (line.startsWith("### Cons")) {
+          if (listOpen) html += "</ul>";
+          listOpen = false;
+          currentListClass = "cons";
+          html += `<h3 class="section-title">⚠️ Cons</h3>`;
+        } else if (line.startsWith("### Red Flags")) {
+          if (listOpen) html += "</ul>";
+          listOpen = false;
+          currentListClass = "redflags";
+          html += `<h3 class="section-title">🚫 Red Flags</h3>`;
+        } else if (line.startsWith("- ")) {
+          if (!listOpen) {
+            html += `<ul class="${currentListClass}">`;
+            listOpen = true;
+          }
+          html += `<li>${line.slice(2)}</li>`;
+        } else {
+          if (listOpen) html += "</ul>";
+          listOpen = false;
+          html += `<p>${line}</p>`;
+        }
+      });
+      if (listOpen) html += "</ul>";
+
+      const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
+
+      return `
+        <div class="card" data-index="${index}">
+          <div class="timestamp">
+            🕒 ${new Date(entry.timestamp).toLocaleString()}
+            <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+          </div>
+          <div class="summary">${html}</div>
+        </div>
+      `;
+    }).join("");
+
+    container.innerHTML = entriesHtml;
+
+    // Bookmark Button Click
+    document.querySelectorAll(".bookmark-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.dataset.index);
+        chrome.storage.local.get({ history: [] }, (data) => {
+          const updated = [...data.history];
+          const realIndex = data.history.length - 1 - i;
+          updated[realIndex].bookmarked = !updated[realIndex].bookmarked;
+          chrome.storage.local.set({ history: updated }, () => location.reload());
+        });
+      });
+    });
+  }
+
+  // Export All as TXT
   exportTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
-
       const text = data.history.map(entry => {
         const date = new Date(entry.timestamp).toLocaleString();
         return `📅 ${date}\n\n${entry.summary}\n\n---\n`;
@@ -36,7 +107,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ✅ Export All as PDF
+  // Export All as PDF
   exportPdfBtn?.addEventListener("click", async () => {
     chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
@@ -74,7 +145,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ✅ Handle Clear History
+  // Clear History
   clearBtn?.addEventListener("click", () => {
     if (confirm("⚠️ Are you sure you want to clear all history?")) {
       chrome.storage.local.set({ history: [] }, () => {
@@ -83,103 +154,24 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ Load history and render entries
+  // Load + Search
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
     return;
   }
 
   chrome.storage.local.get({ history: [] }, (data) => {
-
-
     allSummaries = data.history.reverse();
     renderSummaries(allSummaries);
 
-    document.getElementById("searchInput").addEventListener("input", (e) => {
+    searchInput?.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase();
-    
       const filtered = allSummaries.filter(entry => {
         const date = new Date(entry.timestamp).toLocaleString().toLowerCase();
         const text = entry.summary.toLowerCase();
         return date.includes(keyword) || text.includes(keyword);
       });
-    
       renderSummaries(filtered);
     });
-    
-
-    if (data.history.length === 0) {
-      container.innerHTML = "<p>No history yet.</p>";
-      return;
-    }
-
-    function renderSummaries(entries) {
-
-
-      const entriesHtml = data.history.reverse().map((entry, index) => {
-        const lines = entry.summary.split("\n");
-        let html = "";
-        let currentListClass = "";
-        let listOpen = false;
-  
-        lines.forEach(line => {
-          if (line.startsWith("### Pros")) {
-            if (listOpen) html += "</ul>";
-            listOpen = false;
-            currentListClass = "pros";
-            html += `<h3 class="section-title">✔️ Pros</h3>`;
-          } else if (line.startsWith("### Cons")) {
-            if (listOpen) html += "</ul>";
-            listOpen = false;
-            currentListClass = "cons";
-            html += `<h3 class="section-title">⚠️ Cons</h3>`;
-          } else if (line.startsWith("### Red Flags")) {
-            if (listOpen) html += "</ul>";
-            listOpen = false;
-            currentListClass = "redflags";
-            html += `<h3 class="section-title">🚫 Red Flags</h3>`;
-          } else if (line.startsWith("- ")) {
-            if (!listOpen) {
-              html += `<ul class="${currentListClass}">`;
-              listOpen = true;
-            }
-            html += `<li>${line.slice(2)}</li>`;
-          } else {
-            if (listOpen) html += "</ul>";
-            listOpen = false;
-            html += `<p>${line}</p>`;
-          }
-        });
-        if (listOpen) html += "</ul>";
-  
-        const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
-  
-        return `
-          <div class="card" data-index="${index}">
-            <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}
-              <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
-            </div>
-            <div class="summary">${html}</div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    container.innerHTML = entriesHtml;
-
-    // ✅ Add click event to all bookmark buttons
-    document.querySelectorAll(".bookmark-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const i = Number(btn.dataset.index);
-        chrome.storage.local.get({ history: [] }, (data) => {
-          const updated = [...data.history];
-          const realIndex = data.history.length - 1 - i; // since we reversed
-          updated[realIndex].bookmarked = !updated[realIndex].bookmarked;
-          chrome.storage.local.set({ history: updated }, () => location.reload());
-        });
-      });
-    });
-
-    
   });
 });
