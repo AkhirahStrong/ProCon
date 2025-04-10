@@ -8,7 +8,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let allSummaries = [];
 
-  // Toggle Dark Mode
+  // Dark Mode Toggle
   themeToggle?.addEventListener("click", () => {
     document.body.classList.toggle("dark");
     localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark");
   }
 
-  // Render Summaries Function
+  // Render Summaries
   function renderSummaries(entries) {
     if (entries.length === 0) {
       container.innerHTML = "<p>No history found.</p>";
@@ -59,14 +59,17 @@ window.addEventListener("DOMContentLoaded", () => {
           html += `<p>${line}</p>`;
         }
       });
+
       if (listOpen) html += "</ul>";
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
+      const siteInfo = entry.site ? `<small class="site-info">🔗 ${entry.site}</small>` : "";
 
       return `
         <div class="card" data-index="${index}">
           <div class="timestamp">
             🕒 ${new Date(entry.timestamp).toLocaleString()}
+            ${siteInfo}
             <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
           </div>
           <div class="summary">${html}</div>
@@ -76,7 +79,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = entriesHtml;
 
-    // Bookmark Button Click
     document.querySelectorAll(".bookmark-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const i = Number(btn.dataset.index);
@@ -90,13 +92,13 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Export All as TXT
+  // Export to TXT
   exportTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
       const text = data.history.map(entry => {
         const date = new Date(entry.timestamp).toLocaleString();
-        return `📅 ${date}\n\n${entry.summary}\n\n---\n`;
+        return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
       }).join("");
 
       const blob = new Blob([text], { type: "text/plain" });
@@ -107,7 +109,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Export All as PDF
+  // Export to PDF
   exportPdfBtn?.addEventListener("click", async () => {
     chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
@@ -132,7 +134,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         data.history.forEach((entry, index) => {
           const date = new Date(entry.timestamp).toLocaleString();
-          const text = `📅 ${date}\n\n${entry.summary}`;
+          const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
           const lines = doc.splitTextToSize(text, 180);
           doc.text(lines, 15, 20);
           if (index < data.history.length - 1) doc.addPage();
@@ -154,7 +156,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Load + Search
+  // Load + Search + Render
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
     return;
@@ -169,7 +171,8 @@ window.addEventListener("DOMContentLoaded", () => {
       const filtered = allSummaries.filter(entry => {
         const date = new Date(entry.timestamp).toLocaleString().toLowerCase();
         const text = entry.summary.toLowerCase();
-        return date.includes(keyword) || text.includes(keyword);
+        const site = (entry.site || "").toLowerCase();
+        return date.includes(keyword) || text.includes(keyword) || site.includes(keyword);
       });
       renderSummaries(filtered);
     });
