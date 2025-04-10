@@ -5,6 +5,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const exportPdfBtn = document.getElementById("exportPdf");
   const themeToggle = document.getElementById("themeToggle");
 
+  let allSummaries = []; // to store full history for filtering
+
+
   // ✅ Dark mode toggle
   themeToggle?.addEventListener("click", () => {
     document.body.classList.toggle("dark");
@@ -87,58 +90,80 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   chrome.storage.local.get({ history: [] }, (data) => {
+
+
+    allSummaries = data.history.reverse();
+    renderSummaries(allSummaries);
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      const keyword = e.target.value.toLowerCase();
+    
+      const filtered = allSummaries.filter(entry => {
+        const date = new Date(entry.timestamp).toLocaleString().toLowerCase();
+        const text = entry.summary.toLowerCase();
+        return date.includes(keyword) || text.includes(keyword);
+      });
+    
+      renderSummaries(filtered);
+    });
+    
+
     if (data.history.length === 0) {
       container.innerHTML = "<p>No history yet.</p>";
       return;
     }
 
-    const entriesHtml = data.history.reverse().map((entry, index) => {
-      const lines = entry.summary.split("\n");
-      let html = "";
-      let currentListClass = "";
-      let listOpen = false;
+    function renderSummaries(entries) {
 
-      lines.forEach(line => {
-        if (line.startsWith("### Pros")) {
-          if (listOpen) html += "</ul>";
-          listOpen = false;
-          currentListClass = "pros";
-          html += `<h3 class="section-title">✔️ Pros</h3>`;
-        } else if (line.startsWith("### Cons")) {
-          if (listOpen) html += "</ul>";
-          listOpen = false;
-          currentListClass = "cons";
-          html += `<h3 class="section-title">⚠️ Cons</h3>`;
-        } else if (line.startsWith("### Red Flags")) {
-          if (listOpen) html += "</ul>";
-          listOpen = false;
-          currentListClass = "redflags";
-          html += `<h3 class="section-title">🚫 Red Flags</h3>`;
-        } else if (line.startsWith("- ")) {
-          if (!listOpen) {
-            html += `<ul class="${currentListClass}">`;
-            listOpen = true;
+
+      const entriesHtml = data.history.reverse().map((entry, index) => {
+        const lines = entry.summary.split("\n");
+        let html = "";
+        let currentListClass = "";
+        let listOpen = false;
+  
+        lines.forEach(line => {
+          if (line.startsWith("### Pros")) {
+            if (listOpen) html += "</ul>";
+            listOpen = false;
+            currentListClass = "pros";
+            html += `<h3 class="section-title">✔️ Pros</h3>`;
+          } else if (line.startsWith("### Cons")) {
+            if (listOpen) html += "</ul>";
+            listOpen = false;
+            currentListClass = "cons";
+            html += `<h3 class="section-title">⚠️ Cons</h3>`;
+          } else if (line.startsWith("### Red Flags")) {
+            if (listOpen) html += "</ul>";
+            listOpen = false;
+            currentListClass = "redflags";
+            html += `<h3 class="section-title">🚫 Red Flags</h3>`;
+          } else if (line.startsWith("- ")) {
+            if (!listOpen) {
+              html += `<ul class="${currentListClass}">`;
+              listOpen = true;
+            }
+            html += `<li>${line.slice(2)}</li>`;
+          } else {
+            if (listOpen) html += "</ul>";
+            listOpen = false;
+            html += `<p>${line}</p>`;
           }
-          html += `<li>${line.slice(2)}</li>`;
-        } else {
-          if (listOpen) html += "</ul>";
-          listOpen = false;
-          html += `<p>${line}</p>`;
-        }
-      });
-      if (listOpen) html += "</ul>";
-
-      const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
-
-      return `
-        <div class="card" data-index="${index}">
-          <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}
-            <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+        });
+        if (listOpen) html += "</ul>";
+  
+        const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
+  
+        return `
+          <div class="card" data-index="${index}">
+            <div class="timestamp">🕒 ${new Date(entry.timestamp).toLocaleString()}
+              <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+            </div>
+            <div class="summary">${html}</div>
           </div>
-          <div class="summary">${html}</div>
-        </div>
-      `;
-    }).join("");
+        `;
+      }).join("");
+    }
 
     container.innerHTML = entriesHtml;
 
@@ -154,5 +179,7 @@ window.addEventListener("DOMContentLoaded", () => {
         });
       });
     });
+
+    
   });
 });
