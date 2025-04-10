@@ -64,12 +64,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
       const siteInfo = entry.site ? `<small class="site-info">🔗 ${entry.site}</small>` : "";
-      const newEntry = {
-        summary: result,
-        timestamp: new Date().toISOString(),
-        site: currentTabUrl.host  // capture from activeTab.url
-      };
-       
 
       return `
         <div class="card" data-index="${index}">
@@ -85,6 +79,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = entriesHtml;
 
+    // Handle Bookmark Toggle
     document.querySelectorAll(".bookmark-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const i = Number(btn.dataset.index);
@@ -98,7 +93,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Export to TXT
+  // Export as TXT
   exportTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
@@ -115,7 +110,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Export to PDF
+  // Export as PDF
   exportPdfBtn?.addEventListener("click", async () => {
     chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
@@ -129,7 +124,7 @@ window.addEventListener("DOMContentLoaded", () => {
               resolve(window.jspdf.jsPDF);
             } else if (++tries > 10) {
               clearInterval(interval);
-              reject("PDF generator not loaded. Try again.");
+              reject("PDF generator not loaded.");
             }
           }, 200);
         });
@@ -162,7 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Load + Search + Render
+  // Load History + Enable Search
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
     return;
