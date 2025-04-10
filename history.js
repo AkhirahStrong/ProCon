@@ -64,6 +64,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
       const siteInfo = entry.site ? `<small class="site-info">🔗 ${entry.site}</small>` : "";
+      const newEntry = {
+        summary: result,
+        timestamp: new Date().toISOString(),
+        site: currentTabUrl.host  // capture from activeTab.url
+      };
+       
 
       return `
         <div class="card" data-index="${index}">
