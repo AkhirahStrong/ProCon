@@ -5,6 +5,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const exportPdfBtn = document.getElementById("exportPdf");
   const themeToggle = document.getElementById("themeToggle");
   const searchInput = document.getElementById("searchInput");
+  const sortSelect = document.getElementById("sortSelect");
+
 
   let allSummaries = [];
 
@@ -169,7 +171,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   chrome.storage.local.get({ history: [] }, (data) => {
-    allSummaries = data.history.reverse();
+    allSummaries = data.history.applySorting();
     renderSummaries(allSummaries);
 
     searchInput?.addEventListener("input", (e) => {
