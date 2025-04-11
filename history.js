@@ -64,7 +64,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
       const siteInfo = entry.site ? `<small class="site-info">🔗 ${entry.site}</small>` : "";
-      
+      const cardClass = entry.bookmarked ? "card bookmarked" : "card";
+
+
+      return `
+      <div class="${cardClass}" data-index="${index}">
+        <div class="timestamp">
+          🕒 ${new Date(entry.timestamp).toLocaleString()}
+          ${siteInfo}
+          <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+        </div>
+        <div class="summary">${html}</div>
+      </div>
+    `;
+    }).join("");
 
       return `
         <div class="card" data-index="${index}">
