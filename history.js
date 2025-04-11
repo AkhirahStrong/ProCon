@@ -3,6 +3,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const clearBtn = document.getElementById("clearBtn");
   const exportTxtBtn = document.getElementById("exportTxt");
   const exportPdfBtn = document.getElementById("exportPdf");
+  const exportBookmarksTxtBtn = document.getElementById("exportBookmarksTxt");
+  const exportBookmarksPdfBtn = document.getElementById("exportBookmarksPdf");
   const themeToggle = document.getElementById("themeToggle");
   const searchInput = document.getElementById("searchInput");
 
@@ -59,26 +61,22 @@ window.addEventListener("DOMContentLoaded", () => {
           html += `<p>${line}</p>`;
         }
       });
-
       if (listOpen) html += "</ul>";
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
       const siteInfo = entry.site ? `<small class="site-info">🔗 ${entry.site}</small>` : "";
       const cardClass = entry.bookmarked ? "card bookmarked" : "card";
 
-
       return `
-      <div class="${cardClass}" data-index="${index}">
-        <div class="timestamp">
-          🕒 ${new Date(entry.timestamp).toLocaleString()}
-          ${siteInfo}
-          <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+        <div class="${cardClass}" data-index="${index}">
+          <div class="timestamp">
+            🕒 ${new Date(entry.timestamp).toLocaleString()}
+            ${siteInfo}
+            <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+          </div>
+          <div class="summary">${html}</div>
         </div>
-        <div class="summary">${html}</div>
-      </div>
-    `;
-    
-
+      `;
     }).join("");
 
     container.innerHTML = entriesHtml;
@@ -96,7 +94,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Export to TXT
+  // Export All TXT
   exportTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
@@ -113,11 +111,10 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Export to PDF
+  // Export All PDF
   exportPdfBtn?.addEventListener("click", async () => {
     chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
-
       const checkLoaded = () =>
         new Promise((resolve, reject) => {
           let tries = 0;
@@ -151,6 +148,64 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Export Bookmarked TXT
+  exportBookmarksTxtBtn?.addEventListener("click", () => {
+    chrome.storage.local.get({ history: [] }, (data) => {
+      const bookmarked = data.history.filter(entry => entry.bookmarked);
+      if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
+
+      const text = bookmarked.map(entry => {
+        const date = new Date(entry.timestamp).toLocaleString();
+        return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
+      }).join("");
+
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ProCon_Bookmarked_Summaries.txt";
+      link.click();
+    });
+  });
+
+  // Export Bookmarked PDF
+  exportBookmarksPdfBtn?.addEventListener("click", async () => {
+    chrome.storage.local.get({ history: [] }, async (data) => {
+      const bookmarked = data.history.filter(entry => entry.bookmarked);
+      if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
+
+      const checkLoaded = () =>
+        new Promise((resolve, reject) => {
+          let tries = 0;
+          const interval = setInterval(() => {
+            if (window.jspdf?.jsPDF) {
+              clearInterval(interval);
+              resolve(window.jspdf.jsPDF);
+            } else if (++tries > 10) {
+              clearInterval(interval);
+              reject("PDF generator not loaded. Try again.");
+            }
+          }, 200);
+        });
+
+      try {
+        const jsPDF = await checkLoaded();
+        const doc = new jsPDF();
+
+        bookmarked.forEach((entry, index) => {
+          const date = new Date(entry.timestamp).toLocaleString();
+          const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
+          const lines = doc.splitTextToSize(text, 180);
+          doc.text(lines, 15, 20);
+          if (index < bookmarked.length - 1) doc.addPage();
+        });
+
+        doc.save("ProCon_Bookmarked_Summaries.pdf");
+      } catch (err) {
+        alert(err);
+      }
+    });
+  });
+
   // Clear History
   clearBtn?.addEventListener("click", () => {
     if (confirm("⚠️ Are you sure you want to clear all history?")) {
@@ -160,7 +215,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Load + Search + Render
+  // Load + Search
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
     return;
