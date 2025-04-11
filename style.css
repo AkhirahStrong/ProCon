@@ -404,3 +404,19 @@ body.dark .card.bookmarked {
   transform: translateY(-4px); /* lift up slightly */
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
+
+
+.top-bar button {
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.top-bar button:hover {
+  background: #f0f0f0;
+}
+
