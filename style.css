@@ -388,14 +388,13 @@ body.dark #themeToggle {
 /* Bookmark color selection change */
 
 .card.bookmarked {
-  background: #4b0fd6;
+  background: #fffbe6;
   border-color: gold;
   box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
   transition: all 0.3s ease;
 }
 
-
 body.dark .card.bookmarked {
-  background-color: #33301f; 
+  background-color: #2f331f; 
   border: 1px solid #f0c040;
 }
