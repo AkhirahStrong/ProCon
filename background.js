@@ -51,7 +51,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
     // ✅ Save to history
     const timestamp = new Date().toISOString();
-    const newEntry = { summary: result, timestamp, bookmarked: false };
+    const siteName = new URL(tab.url).hostname;  // grabs domain only
+    const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
+
+    
 
     chrome.storage.local.get({ history: [] }, (data) => {
       const updated = [...data.history, newEntry];
