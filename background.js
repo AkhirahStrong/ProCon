@@ -1,9 +1,8 @@
 importScripts('limits.js');
 
-
 const BACKEND_URL = "https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/analyze";
 
-// This runs when the extension is installed
+// On install - Create Context Menus
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "analyzePrivacy",
@@ -18,36 +17,50 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// API call to your backend
+
+// Call Backend API
 async function callChatGPT(text, lang) {
   const res = await fetch(BACKEND_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ selectedText: text, lang  })
+    body: JSON.stringify({ selectedText: text, lang })
   });
 
   const data = await res.json();
+
+  if (res.status === 429) {
+    alert(data.error || "🚫 IP daily limit reached.");
+    throw new Error("IP limit reached");
+  }
+
+  if (!res.ok) {
+    alert(data.error || "❌ Something went wrong.");
+    throw new Error("Unknown error");
+  }
+
   return data.summary;
 }
 
-// When a context menu item is clicked
+
+// Context Menu Handler
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+
   if (info.menuItemId === "analyzePrivacy") {
 
-    // Put use limits by tracking local storage 
+    // 1. Local Limit Check
     const localAllowed = await checkLocalLimit();
 
     if (!localAllowed) {
       alert("🚫 Daily limit reached on this browser.\nSign up for unlimited access.");
-      chrome.tabs.create({ url: 'https://your-site.com/signup' }); 
-      return; 
+      chrome.tabs.create({ url: 'https://your-site.com/signup' });
+      return;
     }
 
     const selectedText = info.selectionText;
 
-    // ✅ Show alert on the current page with highlighted text
+    // 2. Show Loading Alert
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (text) => {
@@ -56,35 +69,39 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       args: [selectedText]
     });
 
-    // 🔹 Call your backend
-    // const result = await callChatGPT(selectedText);
     const lang = await chrome.storage.local.get("lang").then(res => res.lang || "en");
-    const result = await callChatGPT(selectedText, lang);
 
+    try {
+      // 3. Backend Call with IP Check
+      const result = await callChatGPT(selectedText, lang);
 
-    // ✅ Save to history
-    const timestamp = new Date().toISOString();
-    const siteName = new URL(tab.url).hostname;  // grabs domain only
-    const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
+      // 4. Save Result to History
+      const timestamp = new Date().toISOString();
+      const siteName = new URL(tab.url).hostname;
+      const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
 
-    
+      chrome.storage.local.get({ history: [] }, (data) => {
+        const updated = [...data.history, newEntry];
+        chrome.storage.local.set({ history: updated });
+      });
 
-    chrome.storage.local.get({ history: [] }, (data) => {
-      const updated = [...data.history, newEntry];
-      chrome.storage.local.set({ history: updated });
-    });
+      // 5. Open Summary Page
+      chrome.tabs.create({
+        url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
+      });
 
-    // 🔹 Open summary page with result
-    chrome.tabs.create({
-      url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
-    });
+    } catch (err) {
+      console.warn("Analysis failed:", err);
+      // Don't break flow - Alert already shown
+    }
 
   }
-  // Optional: if you add a second context menu for history
-if (info.menuItemId === "viewHistory") {
-  chrome.tabs.create({
-    url: chrome.runtime.getURL("history.html")
-  });
 
-}
+
+  if (info.menuItemId === "viewHistory") {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("history.html")
+    });
+  }
+
 });

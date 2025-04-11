@@ -1,11 +1,10 @@
 export default async function handler(req, res) {
-
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const IP_LIMIT = 10;
-  const ipUsage = {};
+  const ipUsage = {};  // This will reset every backend restart (for now)
 
   function checkIpLimit(ip) {
     const today = new Date().toDateString();
@@ -23,19 +22,25 @@ export default async function handler(req, res) {
     return false;
   }
 
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  // ---------- GET USER IP ----------
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
 
-  if (!checkIpLimit(ip)) {
-    return res.status(429).json({ error: "Daily limit reached for this IP." });
+  // ---------- CHECK IP LIMIT ----------
+  const allowed = checkIpLimit(ip);  // <-- not await because this is local object
+
+  if (!allowed) {
+    return res.status(429).json({ error: "IP daily limit reached." });
   }
 
+  // ---------- CHECK USER INPUT ----------
+  const { selectedText } = req.body;
+
+  if (!selectedText) {
+    return res.status(400).json({ error: "Missing selected text." });
+  }
+
+  // ---------- CALL OPENAI ----------
   try {
-    const { selectedText } = req.body;
-
-    if (!selectedText) {
-      return res.status(400).json({ error: "Missing selected text." });
-    }
-
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
