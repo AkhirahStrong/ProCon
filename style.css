@@ -406,7 +406,7 @@ body.dark .card.bookmarked {
 }
 
 
-/* .top-bar button {
+.top-bar button #sortSelect {
   margin-top: 0.5rem;
   margin-right: 0.5rem;
   padding: 0.4rem 0.8rem;
@@ -416,7 +416,7 @@ body.dark .card.bookmarked {
   transition: background 0.2s ease;
 }
 
-.top-bar button:hover {
+.top-bar #sortSelect button:hover {
   background: #f0f0f0;
-} */
+}
 
