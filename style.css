@@ -407,6 +407,7 @@ body.dark .card.bookmarked {
 
 
 .top-bar select {
+  margin: 0.5rem auto;
   margin-top: 0.5rem;
   margin-right: 0.5rem;
   padding: 0.4rem 0.8rem;
