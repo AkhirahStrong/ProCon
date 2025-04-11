@@ -421,3 +421,11 @@ body.dark .card.bookmarked {
   background: #f0f0f0;
 }
 
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Align vertically */
+  margin-bottom: 1rem;
+}
