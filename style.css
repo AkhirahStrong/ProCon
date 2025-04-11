@@ -389,7 +389,7 @@ body.dark #themeToggle {
 
 .card.bookmarked {
   background: linear-gradient(135deg, #fff9e6, #fff);
-  border-color: gold;
+  border-color: rgb(255, 115, 0);
   box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
