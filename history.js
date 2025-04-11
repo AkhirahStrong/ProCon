@@ -3,14 +3,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const clearBtn = document.getElementById("clearBtn");
   const exportTxtBtn = document.getElementById("exportTxt");
   const exportPdfBtn = document.getElementById("exportPdf");
-  const exportBookmarksTxtBtn = document.getElementById("exportBookmarksTxt");
-  const exportBookmarksPdfBtn = document.getElementById("exportBookmarksPdf");
   const themeToggle = document.getElementById("themeToggle");
   const searchInput = document.getElementById("searchInput");
 
   let allSummaries = [];
 
-  // Toggle Dark Mode
+  // Dark Mode Toggle
   themeToggle?.addEventListener("click", () => {
     document.body.classList.toggle("dark");
     localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
@@ -20,7 +18,6 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark");
   }
 
-  // Render Summaries
   function renderSummaries(entries) {
     if (entries.length === 0) {
       container.innerHTML = "<p>No history found.</p>";
@@ -61,7 +58,6 @@ window.addEventListener("DOMContentLoaded", () => {
           html += `<p>${line}</p>`;
         }
       });
-
       if (listOpen) html += "</ul>";
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
@@ -95,86 +91,59 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Export Helpers
-  function exportToTxt(entries, filename) {
-    const text = entries.map(entry => {
-      const date = new Date(entry.timestamp).toLocaleString();
-      return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
-    }).join("");
-
-    const blob = new Blob([text], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-  }
-
-  async function exportToPdf(entries, filename) {
-    const checkLoaded = () =>
-      new Promise((resolve, reject) => {
-        let tries = 0;
-        const interval = setInterval(() => {
-          if (window.jspdf?.jsPDF) {
-            clearInterval(interval);
-            resolve(window.jspdf.jsPDF);
-          } else if (++tries > 10) {
-            clearInterval(interval);
-            reject("PDF generator not loaded. Try again.");
-          }
-        }, 200);
-      });
-
-    try {
-      const jsPDF = await checkLoaded();
-      const doc = new jsPDF();
-
-      entries.forEach((entry, index) => {
-        const date = new Date(entry.timestamp).toLocaleString();
-        const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
-        const lines = doc.splitTextToSize(text, 180);
-        doc.text(lines, 15, 20);
-        if (index < entries.length - 1) doc.addPage();
-      });
-
-      doc.save(filename);
-    } catch (err) {
-      alert(err);
-    }
-  }
-
-  // Export All Events
   exportTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
-      exportToTxt(data.history, "ProCon_All_Summaries.txt");
+      const text = data.history.map(entry => {
+        const date = new Date(entry.timestamp).toLocaleString();
+        return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
+      }).join("");
+
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ProCon_All_Summaries.txt";
+      link.click();
     });
   });
 
-  exportPdfBtn?.addEventListener("click", () => {
-    chrome.storage.local.get({ history: [] }, (data) => {
+  exportPdfBtn?.addEventListener("click", async () => {
+    chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
-      exportToPdf(data.history, "ProCon_All_Summaries.pdf");
+
+      const checkLoaded = () =>
+        new Promise((resolve, reject) => {
+          let tries = 0;
+          const interval = setInterval(() => {
+            if (window.jspdf?.jsPDF) {
+              clearInterval(interval);
+              resolve(window.jspdf.jsPDF);
+            } else if (++tries > 10) {
+              clearInterval(interval);
+              reject("PDF generator not loaded. Try again.");
+            }
+          }, 200);
+        });
+
+      try {
+        const jsPDF = await checkLoaded();
+        const doc = new jsPDF();
+
+        data.history.forEach((entry, index) => {
+          const date = new Date(entry.timestamp).toLocaleString();
+          const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
+          const lines = doc.splitTextToSize(text, 180);
+          doc.text(lines, 15, 20);
+          if (index < data.history.length - 1) doc.addPage();
+        });
+
+        doc.save("ProCon_All_Summaries.pdf");
+      } catch (err) {
+        alert(err);
+      }
     });
   });
 
-  // Export Bookmarked Events
-  exportBookmarksTxtBtn?.addEventListener("click", () => {
-    chrome.storage.local.get({ history: [] }, (data) => {
-      const bookmarked = data.history.filter(entry => entry.bookmarked);
-      if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
-      exportToTxt(bookmarked, "ProCon_Bookmarked_Summaries.txt");
-    });
-  });
-
-  exportBookmarksPdfBtn?.addEventListener("click", () => {
-    chrome.storage.local.get({ history: [] }, (data) => {
-      const bookmarked = data.history.filter(entry => entry.bookmarked);
-      if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
-      exportToPdf(bookmarked, "ProCon_Bookmarked_Summaries.pdf");
-    });
-  });
-
-  // Clear History
   clearBtn?.addEventListener("click", () => {
     if (confirm("⚠️ Are you sure you want to clear all history?")) {
       chrome.storage.local.set({ history: [] }, () => {
@@ -183,7 +152,11 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Load and Search
+  if (!chrome?.storage?.local) {
+    container.innerText = "⚠️ This page must be opened through the extension.";
+    return;
+  }
+
   chrome.storage.local.get({ history: [] }, (data) => {
     allSummaries = data.history.reverse();
     renderSummaries(allSummaries);
