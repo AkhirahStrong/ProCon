@@ -36,7 +36,7 @@ async function callChatGPT(text, lang) {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "analyzePrivacy") {
 
-    // Put use limits by tracking local storage tracker
+    // Put use limits by tracking local storage 
     const localAllowed = await checkLocalLimit();
 
     if (!localAllowed) {
