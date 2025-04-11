@@ -405,8 +405,7 @@ body.dark .card.bookmarked {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-
-.top-bar button {
+#selection {
   margin-top: 0.5rem;
   margin-right: 0.5rem;
   padding: 0.4rem 0.8rem;
@@ -416,7 +415,7 @@ body.dark .card.bookmarked {
   transition: background 0.2s ease;
 }
 
-.top-bar button:hover {
+#selection {
   background: #f0f0f0;
 }
 
