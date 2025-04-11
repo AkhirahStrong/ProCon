@@ -1,5 +1,27 @@
 export default async function handler(req, res) {
 
+
+  // const IP_LIMIT = 10; // per IP per day
+
+  // const ipUsage = {}; // store like { "123.456.789": { count: 4, lastReset: "..." } }
+
+  // function checkIpLimit(ip) {
+  //  const today = new Date().toDateString();
+
+  //  if (!ipUsage[ip] || ipUsage[ip].lastReset !== today) {
+  //    ipUsage[ip] = { count: 1, lastReset: today };
+  //    return true;
+  //  }
+
+  //  if (ipUsage[ip].count < IP_LIMIT) {
+  //    ipUsage[ip].count++;
+  //    return true;
+  //  }
+
+  //  return false; // ip limit hit
+  // }
+
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }

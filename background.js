@@ -1,3 +1,6 @@
+importScripts('limits.js');
+
+
 const BACKEND_URL = "https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/analyze";
 
 // This runs when the extension is installed
@@ -32,6 +35,16 @@ async function callChatGPT(text, lang) {
 // When a context menu item is clicked
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "analyzePrivacy") {
+
+    // Put use limits by tracking local storage tracker
+    const localAllowed = await checkLocalLimit();
+
+    if (!localAllowed) {
+      alert("🚫 Daily limit reached on this browser.\nSign up for unlimited access.");
+      chrome.tabs.create({ url: 'https://your-site.com/signup' }); 
+      return; 
+    }
+
     const selectedText = info.selectionText;
 
     // ✅ Show alert on the current page with highlighted text
