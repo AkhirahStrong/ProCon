@@ -5,8 +5,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const exportPdfBtn = document.getElementById("exportPdf");
   const themeToggle = document.getElementById("themeToggle");
   const searchInput = document.getElementById("searchInput");
-  const sortSelect = document.getElementById("sortSelect");
-
+  const sortSelect = document.getElementById("sortSelect"); // <-- Sort Dropdown
 
   let allSummaries = [];
 
@@ -68,18 +67,16 @@ window.addEventListener("DOMContentLoaded", () => {
       const siteInfo = entry.site ? `<small class="site-info">🔗 ${entry.site}</small>` : "";
       const cardClass = entry.bookmarked ? "card bookmarked" : "card";
 
-
       return `
-      <div class="${cardClass}" data-index="${index}">
-        <div class="timestamp">
-          🕒 ${new Date(entry.timestamp).toLocaleString()}
-          ${siteInfo}
-          <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+        <div class="${cardClass}" data-index="${index}">
+          <div class="timestamp">
+            🕒 ${new Date(entry.timestamp).toLocaleString()}
+            ${siteInfo}
+            <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+          </div>
+          <div class="summary">${html}</div>
         </div>
-        <div class="summary">${html}</div>
-      </div>
-    `;
-    
+      `;
     }).join("");
 
     container.innerHTML = entriesHtml;
@@ -96,6 +93,21 @@ window.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  // New: Sorting Function for Sort Toggle
+  function applySorting() {
+    let sorted = [...allSummaries];
+
+    if (sortSelect?.value === "newest") {
+      sorted.reverse();
+    } else if (sortSelect?.value === "bookmarked") {
+      sorted.sort((a, b) => (b.bookmarked === a.bookmarked) ? 0 : b.bookmarked ? 1 : -1);
+    }
+
+    renderSummaries(sorted);
+  }
+  // <-- End of Sorting Function
+
 
   // Export to TXT
   exportTxtBtn?.addEventListener("click", () => {
@@ -116,9 +128,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Export to PDF
   exportPdfBtn?.addEventListener("click", async () => {
-
-
-    
     chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
 
@@ -171,8 +180,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   chrome.storage.local.get({ history: [] }, (data) => {
-    allSummaries = data.history.applySorting();
-    renderSummaries(allSummaries);
+    allSummaries = data.history;
+    applySorting(); // <-- Load with Sort
 
     searchInput?.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase();
@@ -184,5 +193,7 @@ window.addEventListener("DOMContentLoaded", () => {
       });
       renderSummaries(filtered);
     });
+
+    sortSelect?.addEventListener("change", applySorting); // <-- Run sort when user selects
   });
 });
