@@ -114,7 +114,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Export to PDF
   exportPdfBtn?.addEventListener("click", async () => {
-    
     chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
 
