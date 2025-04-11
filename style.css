@@ -437,8 +437,8 @@ body.dark .card.bookmarked {
   padding: 0.6rem 1rem;
   border-radius: 6px;
   border: none;
-  background-color: #fff;  /* Light mode background */
-  color: #333;             /* Light mode text */
+  background-color: #333;  /* Light mode background */
+  color: #fff;             /* Light mode text */
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
@@ -449,10 +449,10 @@ body.dark .card.bookmarked {
 
 /* Dark Mode */
 body.dark .top-bar select {
-  background-color: #333;  /* Dark mode background */
-  color: #ddd;             /* Dark mode text */
+  background-color: #ddd;  /* Dark mode background */
+  color: #333;             /* Dark mode text */
 }
 
 body.dark .top-bar select:hover {
-  background: #444;  /* Dark mode hover */
+  background: #bbbbbb;  /* Dark mode hover */
 }
