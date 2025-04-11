@@ -77,18 +77,18 @@ window.addEventListener("DOMContentLoaded", () => {
         <div class="summary">${html}</div>
       </div>
     `;
-    }).join("");
+    
 
-      return `
-        <div class="card" data-index="${index}">
-          <div class="timestamp">
-            🕒 ${new Date(entry.timestamp).toLocaleString()}
-            ${siteInfo}
-            <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
-          </div>
-          <div class="summary">${html}</div>
-        </div>
-      `;
+      // return `
+      //   <div class="card" data-index="${index}">
+      //     <div class="timestamp">
+      //       🕒 ${new Date(entry.timestamp).toLocaleString()}
+      //       ${siteInfo}
+      //       <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
+      //     </div>
+      //     <div class="summary">${html}</div>
+      //   </div>
+      // `;
     }).join("");
 
     container.innerHTML = entriesHtml;
