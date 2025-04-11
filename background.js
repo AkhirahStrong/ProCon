@@ -40,7 +40,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       func: (text) => {
         alert(`⏳ Analyzing:\n\n"${text}"`);
       },
-      args: [selectedText, siteName]
+      args: [selectedText]
     });
 
     // 🔹 Call your backend
