@@ -115,67 +115,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Export to PDF
   exportPdfBtn?.addEventListener("click", async () => {
 
-    // Export only Bookmarked to TXT
-document.getElementById("exportBookmarksTxt")?.addEventListener("click", () => {
-  chrome.storage.local.get({ history: [] }, (data) => {
-    const bookmarked = data.history.filter(entry => entry.bookmarked);
-
-    if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
-
-    const text = bookmarked.map(entry => {
-      const date = new Date(entry.timestamp).toLocaleString();
-      return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
-    }).join("");
-
-    const blob = new Blob([text], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "ProCon_Bookmarked_Summaries.txt";
-    link.click();
-  });
-});
-
-
-// Export only Bookmarked to PDF
-document.getElementById("exportBookmarksPdf")?.addEventListener("click", async () => {
-  chrome.storage.local.get({ history: [] }, async (data) => {
-    const bookmarked = data.history.filter(entry => entry.bookmarked);
-
-    if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
-
-    const checkLoaded = () =>
-      new Promise((resolve, reject) => {
-        let tries = 0;
-        const interval = setInterval(() => {
-          if (window.jspdf?.jsPDF) {
-            clearInterval(interval);
-            resolve(window.jspdf.jsPDF);
-          } else if (++tries > 10) {
-            clearInterval(interval);
-            reject("PDF generator not loaded. Try again.");
-          }
-        }, 200);
-      });
-
-    try {
-      const jsPDF = await checkLoaded();
-      const doc = new jsPDF();
-
-      bookmarked.forEach((entry, index) => {
-        const date = new Date(entry.timestamp).toLocaleString();
-        const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
-        const lines = doc.splitTextToSize(text, 180);
-        doc.text(lines, 15, 20);
-        if (index < bookmarked.length - 1) doc.addPage();
-      });
-
-      doc.save("ProCon_Bookmarked_Summaries.pdf");
-    } catch (err) {
-      alert(err);
-    }
-  });
-});
-
+    
 
 
     chrome.storage.local.get({ history: [] }, async (data) => {
