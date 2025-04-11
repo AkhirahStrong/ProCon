@@ -18,6 +18,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark");
   }
 
+  // Render Summaries
   function renderSummaries(entries) {
     if (entries.length === 0) {
       container.innerHTML = "<p>No history found.</p>";
@@ -58,22 +59,25 @@ window.addEventListener("DOMContentLoaded", () => {
           html += `<p>${line}</p>`;
         }
       });
+
       if (listOpen) html += "</ul>";
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
       const siteInfo = entry.site ? `<small class="site-info">🔗 ${entry.site}</small>` : "";
       const cardClass = entry.bookmarked ? "card bookmarked" : "card";
 
+
       return `
-        <div class="${cardClass}" data-index="${index}">
-          <div class="timestamp">
-            🕒 ${new Date(entry.timestamp).toLocaleString()}
-            ${siteInfo}
-            <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
-          </div>
-          <div class="summary">${html}</div>
+      <div class="${cardClass}" data-index="${index}">
+        <div class="timestamp">
+          🕒 ${new Date(entry.timestamp).toLocaleString()}
+          ${siteInfo}
+          <button class="bookmark-btn" data-index="${index}" title="Toggle bookmark">${isBookmarked}</button>
         </div>
-      `;
+        <div class="summary">${html}</div>
+      </div>
+    `;
+    
     }).join("");
 
     container.innerHTML = entriesHtml;
@@ -91,6 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Export to TXT
   exportTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
@@ -107,7 +112,9 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Export to PDF
   exportPdfBtn?.addEventListener("click", async () => {
+    
     chrome.storage.local.get({ history: [] }, async (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
 
@@ -144,6 +151,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Clear History
   clearBtn?.addEventListener("click", () => {
     if (confirm("⚠️ Are you sure you want to clear all history?")) {
       chrome.storage.local.set({ history: [] }, () => {
@@ -152,6 +160,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Load + Search + Render
   if (!chrome?.storage?.local) {
     container.innerText = "⚠️ This page must be opened through the extension.";
     return;
