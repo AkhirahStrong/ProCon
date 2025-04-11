@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let allSummaries = [];
 
-  // Dark Mode Toggle
+  // Toggle Dark Mode
   themeToggle?.addEventListener("click", () => {
     document.body.classList.toggle("dark");
     localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
@@ -61,6 +61,7 @@ window.addEventListener("DOMContentLoaded", () => {
           html += `<p>${line}</p>`;
         }
       });
+
       if (listOpen) html += "</ul>";
 
       const isBookmarked = entry.bookmarked ? "⭐️" : "☆";
@@ -94,115 +95,82 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Export All TXT
+  // Export Helpers
+  function exportToTxt(entries, filename) {
+    const text = entries.map(entry => {
+      const date = new Date(entry.timestamp).toLocaleString();
+      return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
+    }).join("");
+
+    const blob = new Blob([text], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  }
+
+  async function exportToPdf(entries, filename) {
+    const checkLoaded = () =>
+      new Promise((resolve, reject) => {
+        let tries = 0;
+        const interval = setInterval(() => {
+          if (window.jspdf?.jsPDF) {
+            clearInterval(interval);
+            resolve(window.jspdf.jsPDF);
+          } else if (++tries > 10) {
+            clearInterval(interval);
+            reject("PDF generator not loaded. Try again.");
+          }
+        }, 200);
+      });
+
+    try {
+      const jsPDF = await checkLoaded();
+      const doc = new jsPDF();
+
+      entries.forEach((entry, index) => {
+        const date = new Date(entry.timestamp).toLocaleString();
+        const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
+        const lines = doc.splitTextToSize(text, 180);
+        doc.text(lines, 15, 20);
+        if (index < entries.length - 1) doc.addPage();
+      });
+
+      doc.save(filename);
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  // Export All Events
   exportTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
-      const text = data.history.map(entry => {
-        const date = new Date(entry.timestamp).toLocaleString();
-        return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
-      }).join("");
-
-      const blob = new Blob([text], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "ProCon_All_Summaries.txt";
-      link.click();
+      exportToTxt(data.history, "ProCon_All_Summaries.txt");
     });
   });
 
-  // Export All PDF
-  exportPdfBtn?.addEventListener("click", async () => {
-    chrome.storage.local.get({ history: [] }, async (data) => {
+  exportPdfBtn?.addEventListener("click", () => {
+    chrome.storage.local.get({ history: [] }, (data) => {
       if (data.history.length === 0) return alert("❌ No summaries to export.");
-      const checkLoaded = () =>
-        new Promise((resolve, reject) => {
-          let tries = 0;
-          const interval = setInterval(() => {
-            if (window.jspdf?.jsPDF) {
-              clearInterval(interval);
-              resolve(window.jspdf.jsPDF);
-            } else if (++tries > 10) {
-              clearInterval(interval);
-              reject("PDF generator not loaded. Try again.");
-            }
-          }, 200);
-        });
-
-      try {
-        const jsPDF = await checkLoaded();
-        const doc = new jsPDF();
-
-        data.history.forEach((entry, index) => {
-          const date = new Date(entry.timestamp).toLocaleString();
-          const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
-          const lines = doc.splitTextToSize(text, 180);
-          doc.text(lines, 15, 20);
-          if (index < data.history.length - 1) doc.addPage();
-        });
-
-        doc.save("ProCon_All_Summaries.pdf");
-      } catch (err) {
-        alert(err);
-      }
+      exportToPdf(data.history, "ProCon_All_Summaries.pdf");
     });
   });
 
-  // Export Bookmarked TXT
+  // Export Bookmarked Events
   exportBookmarksTxtBtn?.addEventListener("click", () => {
     chrome.storage.local.get({ history: [] }, (data) => {
       const bookmarked = data.history.filter(entry => entry.bookmarked);
       if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
-
-      const text = bookmarked.map(entry => {
-        const date = new Date(entry.timestamp).toLocaleString();
-        return `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}\n\n---\n`;
-      }).join("");
-
-      const blob = new Blob([text], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "ProCon_Bookmarked_Summaries.txt";
-      link.click();
+      exportToTxt(bookmarked, "ProCon_Bookmarked_Summaries.txt");
     });
   });
 
-  // Export Bookmarked PDF
-  exportBookmarksPdfBtn?.addEventListener("click", async () => {
-    chrome.storage.local.get({ history: [] }, async (data) => {
+  exportBookmarksPdfBtn?.addEventListener("click", () => {
+    chrome.storage.local.get({ history: [] }, (data) => {
       const bookmarked = data.history.filter(entry => entry.bookmarked);
       if (bookmarked.length === 0) return alert("❌ No bookmarked summaries to export.");
-
-      const checkLoaded = () =>
-        new Promise((resolve, reject) => {
-          let tries = 0;
-          const interval = setInterval(() => {
-            if (window.jspdf?.jsPDF) {
-              clearInterval(interval);
-              resolve(window.jspdf.jsPDF);
-            } else if (++tries > 10) {
-              clearInterval(interval);
-              reject("PDF generator not loaded. Try again.");
-            }
-          }, 200);
-        });
-
-      try {
-        const jsPDF = await checkLoaded();
-        const doc = new jsPDF();
-
-        bookmarked.forEach((entry, index) => {
-          const date = new Date(entry.timestamp).toLocaleString();
-          const text = `📅 ${date}\nSite: ${entry.site || "Unknown"}\n\n${entry.summary}`;
-          const lines = doc.splitTextToSize(text, 180);
-          doc.text(lines, 15, 20);
-          if (index < bookmarked.length - 1) doc.addPage();
-        });
-
-        doc.save("ProCon_Bookmarked_Summaries.pdf");
-      } catch (err) {
-        alert(err);
-      }
+      exportToPdf(bookmarked, "ProCon_Bookmarked_Summaries.pdf");
     });
   });
 
@@ -215,12 +183,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Load + Search
-  if (!chrome?.storage?.local) {
-    container.innerText = "⚠️ This page must be opened through the extension.";
-    return;
-  }
-
+  // Load and Search
   chrome.storage.local.get({ history: [] }, (data) => {
     allSummaries = data.history.reverse();
     renderSummaries(allSummaries);
