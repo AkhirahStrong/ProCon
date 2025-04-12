@@ -31,7 +31,8 @@
         "style.css",
         "history.html",
         "history.js",
-        "jspdf.umd.min.js"
+        "jspdf.umd.min.js",
+         "lib/config.js"
       ],
       "matches": ["<all_urls>"]
     }
