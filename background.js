@@ -31,13 +31,12 @@ async function callChatGPT(text, lang) {
   const data = await res.json();
 
   if (res.status === 429) {
-    alert(data.error || "🚫 IP daily limit reached.");
-    throw new Error("IP limit reached");
+    // IP Limit Hit
+    throw new Error(data.error || "🚫 IP daily limit reached.");
   }
 
   if (!res.ok) {
-    alert(data.error || "❌ Something went wrong.");
-    throw new Error("Unknown error");
+    throw new Error(data.error || "❌ Something went wrong.");
   }
 
   return data.summary;
@@ -48,34 +47,40 @@ async function callChatGPT(text, lang) {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
   if (info.menuItemId === "analyzePrivacy") {
+    const selectedText = info.selectionText;
+
+    if (!selectedText) {
+      console.warn("No text selected.");
+      return;
+    }
 
     // 1. Local Limit Check
     const localAllowed = await checkLocalLimit();
 
     if (!localAllowed) {
-      alert("🚫 Daily limit reached on this browser.\nSign up for unlimited access.");
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => alert("🚫 Daily limit reached on this browser.\nSign up for unlimited access."),
+      });
+
       chrome.tabs.create({ url: 'https://your-site.com/signup' });
       return;
     }
 
-    const selectedText = info.selectionText;
-
-    // 2. Show Loading Alert
+    // 2. Show "Analyzing" Alert
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: (text) => {
-        alert(`⏳ Analyzing:\n\n"${text}"`);
-      },
+      func: (text) => alert(`⏳ Analyzing:\n\n"${text}"`),
       args: [selectedText]
     });
 
     const lang = await chrome.storage.local.get("lang").then(res => res.lang || "en");
 
     try {
-      // 3. Backend Call with IP Check
+      // 3. Backend Call with IP Limit Check
       const result = await callChatGPT(selectedText, lang);
 
-      // 4. Save Result to History
+      // 4. Save to History
       const timestamp = new Date().toISOString();
       const siteName = new URL(tab.url).hostname;
       const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
@@ -91,12 +96,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       });
 
     } catch (err) {
-      console.warn("Analysis failed:", err);
-      // Don't break flow - Alert already shown
+      console.warn("Analysis failed:", err.message);
+
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (errorMessage) => alert(errorMessage),
+        args: [err.message]
+      });
     }
 
   }
-
 
   if (info.menuItemId === "viewHistory") {
     chrome.tabs.create({
