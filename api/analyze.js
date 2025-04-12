@@ -1,32 +1,54 @@
+import { supabase } from '../lib/supabase';
+
 export default async function handler(req, res) {
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const IP_LIMIT = 10;
-  const ipUsage = {};  // This will reset every backend restart (for now)
 
-  function checkIpLimit(ip) {
+  // ---------- GET USER IP ----------
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
+
+  // ---------- CHECK IP LIMIT (with Supabase) ----------
+  async function checkIpLimit(ip) {
     const today = new Date().toDateString();
 
-    if (!ipUsage[ip] || ipUsage[ip].lastReset !== today) {
-      ipUsage[ip] = { count: 1, lastReset: today };
+    const { data, error } = await supabase
+      .from('ip_limit')
+      .select('*')
+      .eq('ip', ip)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error("Supabase Error:", error);
+      return false;
+    }
+
+    if (!data) {
+      await supabase.from('ip_limit').insert([{ ip, count: 1, last_reset: today }]);
       return true;
     }
 
-    if (ipUsage[ip].count < IP_LIMIT) {
-      ipUsage[ip].count++;
+    if (data.last_reset !== today) {
+      await supabase.from('ip_limit')
+        .update({ count: 1, last_reset: today })
+        .eq('ip', ip);
+      return true;
+    }
+
+    if (data.count < IP_LIMIT) {
+      await supabase.from('ip_limit')
+        .update({ count: data.count + 1 })
+        .eq('ip', ip);
       return true;
     }
 
     return false;
   }
 
-  // ---------- GET USER IP ----------
-  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
-
-  // ---------- CHECK IP LIMIT ----------
-  const allowed = checkIpLimit(ip);  // <-- not await because this is local object
+  const allowed = await checkIpLimit(ip);
 
   if (!allowed) {
     return res.status(429).json({ error: "IP daily limit reached." });
