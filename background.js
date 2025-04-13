@@ -85,25 +85,19 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
-          // const choice = prompt(
-          //   "🚫 You've reached your daily free limit.\n\nChoose:\n1 = Upgrade\n2 = Login\n3 = Wait until tomorrow"
-          // );
-
-          chrome.tabs.create({
-            url: chrome.runtime.getURL('limit.html')
-          });
+          const choice = prompt(
+            "🚫 You've reached your daily free limit.\n\nChoose:\n1 = Upgrade\n2 = Login\n3 = Wait until tomorrow"
+          );
     
           if (choice === "1") {
             window.open("https://your-site.com/pricing");
           }else {
-            alert("That's it for today! Sign up for free to keep using your daily limit!");
+            alert("You have reached your daily limit. Sign up for free to continue with the same limit!");
           }
         }
       });
 
-      // chrome.tabs.create({ url: 'https://your-site.com/signup' });
-
-     
+      chrome.tabs.create({ url: 'https://your-site.com/signup' });
       return;
     }
 
