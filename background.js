@@ -85,9 +85,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
-          const choice = prompt(
-            "🚫 You've reached your daily free limit.\n\nChoose:\n1 = Upgrade\n2 = Login\n3 = Wait until tomorrow"
-          );
+          // const choice = prompt(
+          //   "🚫 You've reached your daily free limit.\n\nChoose:\n1 = Upgrade\n2 = Login\n3 = Wait until tomorrow"
+          // );
+
+          chrome.tabs.create({
+            url: chrome.runtime.getURL('limit.html')
+          });
     
           if (choice === "1") {
             window.open("https://your-site.com/pricing");
@@ -99,9 +103,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       // chrome.tabs.create({ url: 'https://your-site.com/signup' });
 
-      chrome.tabs.create({
-        url: chrome.runtime.getURL('limit.html')
-      });
+     
       return;
     }
 
