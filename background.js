@@ -42,6 +42,9 @@ try{
 
   const data = await res.json();
 
+  // testing data parsing 
+   console.log("Parsed data:", data);
+
   if (res.status === 429) {
     // IP Limit Hit
     throw new Error(data.error || "🚫 IP daily limit reached.");
