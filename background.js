@@ -20,6 +20,15 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Call Backend API
 async function callChatGPT(text, lang) {
+
+// debugging reptil request
+console.log("Sending to backend:", BACKEND_URL);
+console.log("Selected text:", text);
+
+
+try{
+
+
   const res = await fetch(BACKEND_URL, {
     method: "POST",
     headers: {
@@ -40,6 +49,9 @@ async function callChatGPT(text, lang) {
   }
 
   return data.summary;
+}catch (fetchError) {
+  console.error("Fetch error:", fetchError);
+}
 }
 
 
