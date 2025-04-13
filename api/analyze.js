@@ -1,4 +1,3 @@
-import { supabase } from '../lib/supabase';
 import { checkIpLimit } from '../lib/ipLimit';
 
 
@@ -8,7 +7,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // const IP_LIMIT = 10;
 
   // ---------- GET USER IP ----------
   const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
