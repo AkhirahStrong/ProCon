@@ -1,13 +1,20 @@
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   alert("⏳ Loading summary...");
 
 
-  const params = new URLSearchParams(window.location.search);
-  const summary = params.get("summary") || "No summary found.";
+  // const params = new URLSearchParams(window.location.search);
+  // const summary = params.get("summary") || "No summary found.";
   const outputEl = document.getElementById("output");
   const copyBtn = document.getElementById("copyBtn");
   const downloadBtn = document.getElementById("downloadBtn");
   const pdfBtn = document.getElementById("pdfBtn");
+
+  // Testing summary.js communacation with reptil
+  const { latestSummary } = await chrome.storage.local.get("latestSummary");
+
+  console.log("Latest Summary:", latestSummary);
+
+  const summary = latestSummary || "No summary found.";
 
   // ✅ Start clean — HTML escapes and structure
   const safeSummary = summary

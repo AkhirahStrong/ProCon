@@ -115,9 +115,18 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       });
 
       // 5. Open Summary Page
+      // chrome.tabs.create({
+      //   url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
+      // });
+
+      await chrome.storage.local.set({ latestSummary: result });
+
       chrome.tabs.create({
-        url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
+        url: chrome.runtime.getURL("summary.html")
       });
+      
+
+
 
     } catch (err) {
       console.warn("Analysis failed:", err.message);
