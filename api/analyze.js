@@ -3,6 +3,12 @@ import { checkIpLimit } from '../lib/ipLimit';
 
 export default async function handler(req, res) {
 
+
+  console.log("Hit analyze.js endpoint");
+
+console.log("Incoming request method:", req.method);
+console.log("Incoming request body:", req.body);
+
   //checking backend communication
   console.log("🔵 Incoming request to /analyze");
 
