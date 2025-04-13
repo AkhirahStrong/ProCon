@@ -92,12 +92,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           if (choice === "1") {
             window.open("https://your-site.com/pricing");
           }else {
-            alert("You have reached your daily limit. Sign up for free to continue with the same limit!");
+            alert("That's it for today! Sign up for free to keep using your daily limit!");
           }
         }
       });
 
-      chrome.tabs.create({ url: 'https://your-site.com/signup' });
+      // chrome.tabs.create({ url: 'https://your-site.com/signup' });
+
+      chrome.tabs.create({
+        url: chrome.runtime.getURL('limit.html')
+      });
       return;
     }
 

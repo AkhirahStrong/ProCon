@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Limit Reached</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 40px;
+      }
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>You've reached your daily free limit</h2>
+    <p>Choose an option to continue:</p>
+
+    <button onclick="handleUpgrade()">Upgrade for Unlimited</button><br />
+    <button onclick="handleLogin()">Login to Continue</button><br />
+    <button onclick="handleWait()">Come Back Tomorrow</button>
+
+    <script src="limit.js"></script>
+  </body>
+</html>
