@@ -84,7 +84,15 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (!localAllowed) {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: () => alert("🚫 Daily limit reached on this browser.\nSign up for unlimited access."),
+        func: () => {
+          if (confirm("🚫 You've reached your daily free limit.\n\nUpgrade for unlimited access?")) {
+            window.open("https://your-site.com/pricing");
+          } else if (confirm("Want to login for extra access?")) {
+            window.open("https://your-site.com/login");
+          } else {
+            alert("Come back tomorrow for more free uses!");
+          }
+        }
       });
 
       chrome.tabs.create({ url: 'https://your-site.com/signup' });
