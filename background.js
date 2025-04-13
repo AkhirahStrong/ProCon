@@ -52,11 +52,16 @@ try{
   }
 
   return data.summary;
-  
+
 }catch (fetchError) {
   console.error("Fetch error:", fetchError);
 }
 }
+
+
+// testing data parsing 
+console.log("Parsed data:", data);
+
 
 
 // Context Menu Handler
