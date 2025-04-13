@@ -458,10 +458,87 @@ body.dark .top-bar select:hover {
 }
 
 /* style options page */
-.limit.btn{
-  background: none !important;
-  border: none !important;
-  font-size: 1rem !important;
-  margin-left: 1rem !important;
-  cursor: pointer !important;
+.limit-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #121212, #232323);
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.limit-card {
+  background: #1e1e1e;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 350px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  animation: fade 0.5s ease forwards;
+}
+
+.limit-card h1 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.limit-card p {
+  color: #aaa;
+  margin-bottom: 2rem;
+}
+
+.limit-actions button {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.7rem;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upgrade {
+  background: linear-gradient(90deg, #ff8a00, #e52e71);
+  color: #fff;
+}
+
+.upgrade:hover {
+  opacity: 0.9;
+}
+
+.login {
+  background: #444;
+  color: #fff;
+}
+
+.login:hover {
+  background: #666;
+}
+
+.wait {
+  background: transparent;
+  color: #888;
+  border: 1px solid #444;
+}
+
+.wait:hover {
+  color: #ccc;
+  border-color: #666;
+}
+
+small {
+  display: block;
+  margin-top: 1rem;
+  color: #555;
+  font-size: 0.75rem;
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
 }
