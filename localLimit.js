@@ -9,4 +9,8 @@ function handleUpgrade() {
   function handleWait() {
     window.close();  // Closes tab
   }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    console.log("Limit Modal Loaded");
+  });
   
