@@ -34,7 +34,7 @@ try{
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ selectedText: text })
+    body: JSON.stringify({ selectedText: text, lang })
   });
 
   const data = await res.json();
