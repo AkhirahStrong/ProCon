@@ -85,9 +85,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
-          if (confirm("🚫 You've reached your daily free limit.\n\nUpgrade for unlimited access?")) {
+          const choice = prompt(
+            "🚫 You've reached your daily free limit.\n\nChoose:\n1 = Upgrade\n2 = Login\n3 = Wait until tomorrow"
+          );
+    
+          if (choice === "1") {
             window.open("https://your-site.com/pricing");
-          } else if (confirm("Want to login for extra access?")) {
+          } else if (choice === "2") {
             window.open("https://your-site.com/login");
           } else {
             alert("Come back tomorrow for more free uses!");
