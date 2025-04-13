@@ -1,75 +1,65 @@
-import { checkIpLimit } from '../lib/ipLimit';
+// Handle POST requests to /analyze route
+app.post("/analyze", async (req, res) => {
 
+  // Log to Replit console when this route is hit
+  console.log("🔥 HIT /analyze route");
 
-export default async function handler(req, res) {
-
-
-  console.log("Hit analyze.js endpoint");
-
-console.log("Incoming request method:", req.method);
-console.log("Incoming request body:", req.body);
-
-  //checking backend communication
-  console.log("🔵 Incoming request to /analyze");
-
-
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-
-  // ---------- GET USER IP ----------
-  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
-
-  // Check endpoint
-  console.log("IP Address hitting endpoint:", ip);
-
-  const allowed = await checkIpLimit(ip);
-
-  if (!allowed) {
-    return res.status(429).json({ error: "IP daily limit reached." });
-  }
-
-  // ---------- CHECK USER INPUT ----------
+  // Get selected text sent from Chrome Extension
   const { selectedText } = req.body;
 
+  // Log the received text (good for debugging)
+  console.log("📄 Selected Text Received:", selectedText);
+
+  // If no text is provided, return a 400 error
   if (!selectedText) {
+    console.log("⚠️ No text received.");
     return res.status(400).json({ error: "Missing selected text." });
   }
 
-  // ---------- CALL OPENAI ----------
   try {
-    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
+    // Send request to OpenAI's GPT-4o API to analyze the selected text
+    const openaiRes = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,  // Your OpenAI key from .env
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-4o", // Specific GPT model to use
+          messages: [
+            {
+              role: "system",  // Tells GPT how to behave
+              content:
+                "You are a privacy policy analyst. Break down privacy agreements into clear pros, cons, and red flags using bullet points or headers. Be detailed and unbiased.",
+            },
+            {
+              role: "user",  // The user's selected text from the web page
+              content: selectedText,
+            },
+          ],
+        }),
       },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: "You are a privacy policy analyst. Break down privacy agreements into clear pros, cons, and red flags using bullet points or headers. Be detailed and unbiased."
-          },
-          {
-            role: "user",
-            content: selectedText
-          }
-        ]
-      })
-    });
+    );
 
+    // Wait for OpenAI response and parse it to JSON
     const data = await openaiRes.json();
 
-    if (data.choices && data.choices.length > 0) {
-      res.status(200).json({ summary: data.choices[0].message.content });
+    // Log the full OpenAI response (very useful for debugging)
+    console.log("🧠 OpenAI API Response:", data);
+
+    // If GPT returned a summary → send it back to Chrome Extension
+    if (data.choices?.[0]?.message?.content) {
+      res.json({ summary: data.choices[0].message.content });
     } else {
-      res.status(500).json({ error: "No response from OpenAI." });
+      // If GPT response failed but didn't throw an error
+      res.status(500).json({ error: "OpenAI response failed.", data });
     }
 
-  } catch (error) {
-    console.error("OpenAI API error:", error);
+  } catch (err) {
+    // Catch any real errors (API down, network error, invalid key, etc)
+    console.error("❌ OpenAI Error:", err);
     res.status(500).json({ error: "Internal server error." });
   }
-}
+});
