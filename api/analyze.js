@@ -11,6 +11,8 @@ export default async function handler(req, res) {
   // ---------- GET USER IP ----------
   const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
 
+  // Check endpoint
+  console.log("IP Address hitting endpoint:", ip);
 
   const allowed = await checkIpLimit(ip);
 
