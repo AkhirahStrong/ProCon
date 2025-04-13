@@ -92,7 +92,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           if (choice === "1") {
             window.open("https://your-site.com/pricing");
           }else {
-            alert("You have reached your daily limit. Come back tomorrow for more free uses!");
+            alert("You have reached your daily limit. Sign up for free to continue with the same limit!");
           }
         }
       });
