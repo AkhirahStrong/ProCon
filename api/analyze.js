@@ -3,6 +3,10 @@ import { checkIpLimit } from '../lib/ipLimit';
 
 export default async function handler(req, res) {
 
+  //checking backend communication
+  console.log("🔵 Incoming request to /analyze");
+
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
