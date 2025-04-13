@@ -84,7 +84,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (!localAllowed) {
       // Open your limit.html as its own tab
       chrome.tabs.create({
-        url: chrome.runtime.getURL('limit.html')
+        url: chrome.runtime.getURL('localLimit.html')
       });
     
       return;  // Stop running anything else
