@@ -456,3 +456,12 @@ body.dark .top-bar select {
 body.dark .top-bar select:hover {
   background: #bbbbbb;  /* Dark mode hover */
 }
+
+/* style options page */
+.limit.btn{
+  background: none;
+  border: none;
+  font-size: 1rem;
+  margin-left: 1rem;
+  cursor: pointer;
+}
