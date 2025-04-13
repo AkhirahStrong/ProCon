@@ -459,9 +459,9 @@ body.dark .top-bar select:hover {
 
 /* style options page */
 .limit.btn{
-  background: none;
-  border: none;
-  font-size: 1rem;
-  margin-left: 1rem;
-  cursor: pointer;
+  background: none !important;
+  border: none !important;
+  font-size: 1rem !important;
+  margin-left: 1rem !important;
+  cursor: pointer !important;
 }
