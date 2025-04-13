@@ -37,6 +37,9 @@ try{
     body: JSON.stringify({ selectedText: text, lang })
   });
 
+  // Debugging: What does the raw response object look like?
+  console.log("Raw response:", res);
+
   const data = await res.json();
 
   if (res.status === 429) {
@@ -49,6 +52,7 @@ try{
   }
 
   return data.summary;
+  
 }catch (fetchError) {
   console.error("Fetch error:", fetchError);
 }
