@@ -91,10 +91,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     
           if (choice === "1") {
             window.open("https://your-site.com/pricing");
-          } else if (choice === "2") {
-            window.open("https://your-site.com/login");
-          } else {
-            alert("Come back tomorrow for more free uses!");
+          }else {
+            alert("You have reached your daily limit. Come back tomorrow for more free uses!");
           }
         }
       });
