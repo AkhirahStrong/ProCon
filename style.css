@@ -458,34 +458,29 @@ body.dark .top-bar select:hover {
 }
 
 /* style options page */
+/* Light & Dark Mode Variables */
 :root {
-  --bg: #ffffff;
-  --card: #f4f4f5;
-  --text: #111;
-  --subtext: #555;
+  --bg: #f9f9f9;
+  --text: #222;
+  --card: #fff;
   --border: #ddd;
-  --button: #111;
-  --button-text: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #121212;
+    --text: #f1f1f1;
     --card: #1e1e1e;
-    --text: #fff;
-    --subtext: #aaa;
     --border: #333;
-    --button: #fff;
-    --button-text: #121212;
   }
 }
 
 body {
+  margin: 0;
+  padding: 0;
   background: var(--bg);
   color: var(--text);
   font-family: system-ui, sans-serif;
-  margin: 0;
-  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -494,53 +489,59 @@ body {
 
 .limit-card {
   background: var(--card);
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 320px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   animation: fade 0.4s ease-out;
 }
 
-.limit-card h1 {
-  margin-bottom: 1rem;
+h1 {
+  margin-top: 0;
   font-size: 1.5rem;
 }
 
-.limit-card p {
-  color: var(--subtext);
-  margin-bottom: 2rem;
-  line-height: 1.4;
+.limit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
 }
 
-.limit-actions button {
-  display: block;
-  width: 100%;
-  margin-bottom: 0.7rem;
+button {
   padding: 0.75rem;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  background: var(--button);
-  color: var(--button-text);
-  transition: all 0.25s ease;
+  font-size: 1rem;
+  background: #0074ff;
+  color: #fff;
+  transition: background 0.2s ease;
 }
 
-.limit-actions button:hover {
-  opacity: 0.8;
+button:hover {
+  background: #005dd1;
+}
+
+button.wait {
+  background: #555;
+}
+
+button.wait:hover {
+  background: #333;
 }
 
 small {
   display: block;
   margin-top: 1rem;
-  color: var(--subtext);
+  opacity: 0.7;
   font-size: 0.75rem;
 }
 
 @keyframes fade {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
