@@ -4,3 +4,18 @@ package-lock.json
 
 #security
 config.js
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Replit
+*.replit
+.replit
+
+# VS Code
+.vscode/
+.history/
+
+# Logs
+npm-debug.log*
