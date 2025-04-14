@@ -13,4 +13,11 @@ function handleUpgrade() {
   window.addEventListener('DOMContentLoaded', () => {
     console.log("Limit Modal Loaded");
   });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      document.body.classList.add('loaded');
+    }, 1000); // 1 second delay
+  });
+  
   
