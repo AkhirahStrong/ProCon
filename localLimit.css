@@ -62,7 +62,7 @@
   
   button:hover {
     background-color: #005dd1;
-    transform: scale(1.25);
+    transform: scale(1);
   }
   
   small {
