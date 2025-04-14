@@ -1,60 +1,73 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #d4d3d3;
-    transition: background 0.3s, color 0.3s;
+/* Light & Dark Variables */
+:root {
+    --bg: #f5f5f5;
+    --text: #222;
+    --card: #ffffff;
+    --button-bg: #0074ff;
+    --button-text: #ffffff;
   }
   
   @media (prefers-color-scheme: dark) {
-    body {
-      background-color: #1c1c1c;
-      color: #f0f0f0;
+    :root {
+      --bg: #121212;
+      --text: #f1f1f1;
+      --card: #1e1e1e;
+      --button-bg: #4a90e2;
+      --button-text: #ffffff;
     }
   }
   
-  .limit-wrap {
-    text-align: center;
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .limit-container {
+    background: var(--card);
     padding: 2rem;
-    max-width: 400px;
+    border-radius: 12px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
   
   h2 {
-    margin-bottom: 1rem;
+    margin-top: 0;
   }
   
-  p {
-    margin-bottom: 2rem;
-    font-size: 0.9rem;
-    color: #555;
+  .limit-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
   }
   
   button {
-    display: block;
-    width: 100%;
-    margin: 0.5rem 0;
-    padding: 0.75rem;
-    font-size: 1rem;
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+    padding: 0.75rem;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s;
+    font-size: 1rem;
+    transition: background 0.3s ease;
   }
   
   button:hover {
-    background-color: #0056b3;
+    background-color: #005dd1;
   }
   
   small {
     display: block;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
+    opacity: 0.6;
     font-size: 0.75rem;
-    color: #999;
   }
   
