@@ -1,26 +1,33 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>Limit Reached</title>
-    <link rel="stylesheet" href="localLimit.css" />
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 40px;
+        background-color: #d4d3d3;
+      }
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+        cursor: pointer;
+      }
+    </style>
   </head>
-
   <body>
-    <div class="limit-container">
-      <h2>🚫 You've reached your daily free limit</h2>
-      <p>Choose an option to continue:</p>
+    <h2>🚫 You've reached your daily free limit</h2>
+    <p>Choose an option to continue:</p>
 
-      <div class="limit-actions">
-        <button onclick="handleUpgrade()">Upgrade for Unlimited</button>
-        <button onclick="handleLogin()">Free Login to Continue</button>
-        <button onclick="handleWait()">Come Back Tomorrow</button>
-      </div>
-
-      <small>Thanks for using ProCon!</small>
-    </div>
+    <button class="limit.btn" onclick="handleUpgrade()">
+      Upgrade for Unlimited</button
+    ><br />
+    <button class="limit.btn" onclick="handleLogin()">
+      Free Login to Continue</button
+    ><br />
+    <button class="limit.btn" onclick="handleWait()">Come Back Tomorrow</button>
 
     <script src="localLimit.js"></script>
   </body>
