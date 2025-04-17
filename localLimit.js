@@ -1,6 +1,6 @@
-function handleUpgrade() {
-    window.open('https://buy.stripe.com/test_5kA18195J10kdr28ww', '_blank');
-  }
+window.handleUpgrade = function () {
+  window.open('https://buy.stripe.com/test_5kA18195J10kdr28ww', '_blank');
+};
   
   function handleLogin() {
     window.open('https://your-site.com/login', '_blank');
