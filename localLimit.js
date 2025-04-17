@@ -1,5 +1,5 @@
 function handleUpgrade() {
-    window.open('https://your-site.com/upgrade', '_blank');
+    window.open('https://buy.stripe.com/test_5kA18195J10kdr28ww', '_blank');
   }
   
   function handleLogin() {
