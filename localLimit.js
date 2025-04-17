@@ -1,23 +1,21 @@
-window.handleUpgrade = function () {
-  window.open('https://buy.stripe.com/test_5kA18195J10kdr28ww', '_blank');
-};
-  
-  function handleLogin() {
-    window.open('https://your-site.com/login', '_blank');
-  }
-  
-  function handleWait() {
-    window.close();  // Closes tab
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Limit Modal Loaded");
 
-  window.addEventListener('DOMContentLoaded', () => {
-    console.log("Limit Modal Loaded");
+  // Animate load class
+  setTimeout(() => {
+    document.body.classList.add("loaded");
+  }, 1000);
+
+  // Bind button events
+  document.getElementById("upgradeBtn").addEventListener("click", () => {
+    window.open("https://buy.stripe.com/test_5kA18195J10kdr28ww", "_blank");
   });
 
-  window.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-      document.body.classList.add('loaded');
-    }, 1000); // 1 second delay
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    window.open("https://your-site.com/login", "_blank");
   });
-  
-  
+
+  document.getElementById("waitBtn").addEventListener("click", () => {
+    window.close();
+  });
+});
