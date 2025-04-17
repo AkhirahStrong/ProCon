@@ -16,8 +16,8 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription', // or 'payment'
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: 'https://your-replit-url.repl.co/success.html',
-      cancel_url: 'https://your-replit-url.repl.co/cancel.html',
+      success_url: 'https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/success.html',
+      cancel_url: 'https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/cancel.html',
     });
 
     res.json({ sessionId: session.id });

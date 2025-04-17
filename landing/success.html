@@ -25,5 +25,16 @@
         Close Window
       </button>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+      // Launch confetti when page loads
+      window.addEventListener("DOMContentLoaded", () => {
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.6 },
+        });
+      });
+    </script>
   </body>
 </html>
