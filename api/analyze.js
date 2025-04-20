@@ -16,6 +16,19 @@ app.post("/analyze", async (req, res) => {
     return res.status(400).json({ error: "Missing selected text." });
   }
 
+  // Check for userpro users
+  const userIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+  if (await isProUser(userIp)) {
+    console.log("💎 Pro user — skipping limit");
+  } else {
+    const allowed = await checkIpLimit(userIp);
+    if (!allowed) {
+      return res.status(429).json({ error: "🚫 IP daily limit reached." });
+    }
+  }
+
+
   try {
     // Send request to OpenAI's GPT-4o API to analyze the selected text
     const openaiRes = await fetch(
