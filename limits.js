@@ -35,16 +35,13 @@ async function checkIfProUser() {
       method: "GET"
     });
 
-    const { isPro } = await res.json();
-
-    console.log("🧠 Pro check result:", isPro); // Debug here to check for pro
-
     const body = await res.json();
     console.log("🔍 checkIfProUser response:", body);
 
-    return isPro === true;
+    return body.isPro === true;
   } catch (err) {
     console.error("Check Pro error:", err);
     return false;
   }
 }
+
