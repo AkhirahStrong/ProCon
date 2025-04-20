@@ -36,6 +36,9 @@ async function checkIfProUser() {
     });
 
     const { isPro } = await res.json();
+
+    console.log("🧠 Pro check result:", isPro); // Debug here to check for pro
+
     return isPro === true;
   } catch (err) {
     console.error("Check Pro error:", err);
