@@ -25,52 +25,33 @@ const userData = await chrome.storage.local.get(["email", "lang"]);
 const email = userData.email;
 const lang = userData.lang || "en";  
 
-const res = await fetch(BACKEND_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ selectedText: text, lang, email })  // Send email
-});
+console.log("📡 Sending to backend:", BACKEND_URL);
+  console.log("✉️ Email:", email);
+  console.log("📝 Selected text:", text);
 
-// debugging reptil request
-console.log("Sending to backend:", BACKEND_URL);
-console.log("Selected text:", text);
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ selectedText: text, lang, email })  // send email too
+    });
 
+    const data = await res.json();
 
-try{
+    if (res.status === 429) {
+      throw new Error(data.error || "🚫 IP/email daily limit reached.");
+    }
 
+    if (!res.ok) {
+      throw new Error(data.error || "❌ Something went wrong.");
+    }
 
-  const res = await fetch(BACKEND_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ selectedText: text, lang })
-  });
-
-  // Debugging: What does the raw response object look like?
-  console.log("Raw response:", res);
-
-  const data = await res.json();
-
-  // testing data parsing 
-   console.log("Parsed data:", data);
-
-  if (res.status === 429) {
-    // IP Limit Hit
-    throw new Error(data.error || "🚫 IP daily limit reached.");
+    return data.summary;
+  } catch (fetchError) {
+    console.error("Fetch error:", fetchError);
   }
-
-  if (!res.ok) {
-    throw new Error(data.error || "❌ Something went wrong.");
-  }
-
-  return data.summary;
-
-}catch (fetchError) {
-  console.error("Fetch error:", fetchError);
-}
 }
 
 
