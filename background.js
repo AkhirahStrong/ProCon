@@ -23,7 +23,7 @@ async function callChatGPT(text, lang) {
 
 const userData = await chrome.storage.local.get(["email", "lang"]);
 const email = userData.email;
-const lang = userData.lang || "en";  
+// const lang = userData.lang || "en";  
 
 console.log("📡 Sending to backend:", BACKEND_URL);
   console.log("✉️ Email:", email);
