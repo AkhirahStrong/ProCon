@@ -21,6 +21,18 @@ chrome.runtime.onInstalled.addListener(() => {
 // Call Backend API
 async function callChatGPT(text, lang) {
 
+const userData = await chrome.storage.local.get(["email", "lang"]);
+const email = userData.email;
+const lang = userData.lang || "en";  
+
+const res = await fetch(BACKEND_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ selectedText: text, lang, email })  // Send email
+});
+
 // debugging reptil request
 console.log("Sending to backend:", BACKEND_URL);
 console.log("Selected text:", text);

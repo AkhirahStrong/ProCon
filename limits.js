@@ -31,8 +31,17 @@ async function checkLocalLimit() {
 
 async function checkIfProUser() {
   try {
+    const { email } = await chrome.storage.local.get("email");
+
+    if (!email) {
+      console.warn("No email found in storage.");
+      return false;
+    }
+
     const res = await fetch("https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/check-pro", {
-      method: "GET"
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })  // send email for Pro check
     });
 
     const body = await res.json();
@@ -44,4 +53,5 @@ async function checkIfProUser() {
     return false;
   }
 }
+
 
