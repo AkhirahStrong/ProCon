@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.windows.create({
       url: chrome.runtime.getURL("login.html"),
       type: "popup",
-      width: 400,
-      height: 500
+      width: 500,
+      height: 600
     });
   });
   

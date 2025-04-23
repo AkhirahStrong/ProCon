@@ -3,8 +3,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstati
 
 // 🔐 Replace with your Firebase credentials
 const firebaseConfig = {
-  // Public key
-  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0c"",
+    // public key
+  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0c",
   authDomain: "procon-extension.firebaseapp.com",
   projectId: "procon-extension",
   storageBucket: "procon-extension.appspot.com",
@@ -15,21 +15,30 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("loginBtn").addEventListener("click", async () => {
-    const provider = new GoogleAuthProvider();
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const provider = new GoogleAuthProvider();
 
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const email = result.user.email;
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const email = result.user.email;
 
-      // Store the email locally for limit check
-      chrome.storage.local.set({ email }, () => {
-        console.log("✅ Email stored:", email);
+    // ✅ Store email locally
+    chrome.storage.local.set({ email }, () => {
+      console.log("✅ Email stored:", email);
+
+      // ✅ Show feedback message
+      const status = document.getElementById("loginStatus");
+      status.textContent = `✅ Logged in as ${email}`;
+
+      // ✅ Optional: Close login page after 2 seconds
+      setTimeout(() => {
         window.close();
-      });
-    } catch (error) {
-      console.error("❌ Login failed:", error);
-    }
-  });
+      }, 2000);
+    });
+  } catch (error) {
+    console.error("❌ Login failed:", error);
+
+    // Optional error feedback
+    document.getElementById("loginStatus").textContent = "❌ Login failed. Try again.";
+  }
 });
