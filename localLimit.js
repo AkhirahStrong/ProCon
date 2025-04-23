@@ -19,5 +19,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.close();
   });
 
+ 
+  // Login button function
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    chrome.windows.create({
+      url: chrome.runtime.getURL("login.html"),
+      type: "popup",
+      width: 400,
+      height: 500
+    });
+  });
   
+
+
 });
