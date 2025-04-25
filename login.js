@@ -1,6 +1,6 @@
 // ✅ Firebase v8 style (no import)
 const firebaseConfig = {
-  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0cgit",
+  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0c",
   authDomain: "procon-extension.firebaseapp.com",
   projectId: "procon-extension",
   storageBucket: "procon-extension.appspot.com",
