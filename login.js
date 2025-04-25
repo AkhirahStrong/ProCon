@@ -1,12 +1,18 @@
+import { initializeApp } from "firebase/app";
+
 // ✅ Firebase v8 style (no import)
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0cgit",
+  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0c",
   authDomain: "procon-extension.firebaseapp.com",
   projectId: "procon-extension",
-  storageBucket: "procon-extension.appspot.com",
+  storageBucket: "procon-extension.firebasestorage.app",
   messagingSenderId: "137078467459",
   appId: "1:137078467459:web:f81952fe2a8fe9a93624b6"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
