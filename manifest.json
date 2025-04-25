@@ -7,8 +7,14 @@
     "contextMenus",
     "scripting",
     "activeTab",
-    "storage"
+    "storage",
+    "identity"
   ],
+  "oauth2": {
+    "client_id": "firebase-adminsdk-fbsvc@procon-extension.iam.gserviceaccount.com",
+    "scopes": ["email", "profile"]
+  },
+ 
   "background": {
     "service_worker": "background.js"
   },
@@ -32,8 +38,8 @@
         "lib/config.js",
         "lib/firebase-app.js",
         "lib/firebase-auth.js",
-        "auth.html",
-        "auth.js"
+        "login.html",
+        "login.js"
       ],
       "matches": ["<all_urls>"]
     }
