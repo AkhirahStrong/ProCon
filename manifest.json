@@ -8,7 +8,8 @@
     "scripting",
     "activeTab",
     "storage",
-    "identity"
+    "identity",
+    "tabs"
   ],
   "oauth2": {
     "client_id": "firebase-adminsdk-fbsvc@procon-extension.iam.gserviceaccount.com",
@@ -26,7 +27,9 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "ProCon Privacy Analyzer"
+    "default_title": "ProCon Privacy Analyzer",
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
   },
   "web_accessible_resources": [
     {
@@ -45,5 +48,8 @@
       ],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' https://www.gstatic.com/firebasejs/; object-src 'self';"
+  }
 }

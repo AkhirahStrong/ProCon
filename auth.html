@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login or Sign Up</title>
+    <link rel="stylesheet" href="auth.css" />
+
+    <!-- Firebase Core -->
+    <script defer src="lib/firebase-app.js"></script>
+    <script defer src="lib/firebase-auth.js"></script>
+    <!-- Your custom logic -->
+    <script src="auth.js"></script>
+  </head>
+  <body class="auth-body">
+    <div class="auth-container">
+      <h1 class="auth-title">
+        Welcome to <span class="auth-highlight">ProCon</span>
+      </h1>
+
+      <button id="signupBtn" class="signup-btn">Sign Up with Google</button>
+      <button id="loginBtn" class="login-btn">Login with Google</button>
+
+      <p id="authStatus" class="auth-status"></p>
+    </div>
+  </body>
+</html>
