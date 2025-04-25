@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Login button function
   document.getElementById("loginBtn").addEventListener("click", () => {
     chrome.windows.create({
-      url: chrome.runtime.getURL("login.html"),
+      url: chrome.runtime.getURL("auth.html"),
       type: "popup",
       width: 500,
       height: 600
