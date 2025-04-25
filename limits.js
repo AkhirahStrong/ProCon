@@ -33,8 +33,15 @@ async function checkIfProUser() {
   try {
     const { email } = await chrome.storage.local.get("email");
 
+    // if (!email) {
+    //   console.warn("No email found in storage.");
+    //   return false;
+    // }
+
     if (!email) {
-      console.warn("No email found in storage.");
+      console.warn("⚠️ No email found. Prompt user to log in.");
+      // Optional: Open login page automatically
+      chrome.runtime.openOptionsPage?.(); // or manually open login.html
       return false;
     }
 

@@ -20,6 +20,12 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
 
     chrome.storage.local.set({ email }, () => {
       console.log("✅ Logged in as:", email);
+
+      // Confirm it's really stored
+    chrome.storage.local.get("email", (res) => {
+    console.log("📦 Confirmed stored email:", res.email);
+  });
+
       document.getElementById("loginStatus").textContent = `✅ Logged in as ${email}`;
       setTimeout(() => window.close(), 2000);
     });
