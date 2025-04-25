@@ -33,7 +33,7 @@ const firebaseConfig = {
         setTimeout(() => {
           // Redirect or close
           window.location.href = "popup.html";
-        }, 2000);
+        }, 10000);
       });
   
     } catch (error) {
