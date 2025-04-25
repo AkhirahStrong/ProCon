@@ -8,16 +8,13 @@
     "scripting",
     "activeTab",
     "storage",
-    "identity",
-    "tabs"
+    "identity"
   ],
   "oauth2": {
     "client_id": "firebase-adminsdk-fbsvc@procon-extension.iam.gserviceaccount.com",
     "scopes": ["email", "profile"]
   },
-  "host_permissions": [
-    "<all_urls>"
-  ],
+ 
   "background": {
     "service_worker": "background.js"
   },
@@ -27,9 +24,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "ProCon Privacy Analyzer",
-    "default_popup": "popup.html",
-    "default_icon": "icon.png"
+    "default_title": "ProCon Privacy Analyzer"
   },
   "web_accessible_resources": [
     {
