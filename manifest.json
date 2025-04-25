@@ -14,7 +14,9 @@
     "client_id": "firebase-adminsdk-fbsvc@procon-extension.iam.gserviceaccount.com",
     "scopes": ["email", "profile"]
   },
- 
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js"
   },
