@@ -11,7 +11,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "firebase": "^11.6.0"
+    "firebase": "^11.6.1"
   },
   "devDependencies": {
     "tailwindcss": "^4.1.3"

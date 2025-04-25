@@ -28,6 +28,11 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
       document.getElementById("loginStatus").textContent = `✅ Logged in as ${email}`;
       setTimeout(() => window.close(), 2000); // Auto-close after short delay
     });
+
+    chrome.storage.local.get("email", (result) => {
+      console.log("📦 Email in storage:", result.email);
+    });
+    
   } catch (err) {
     console.error("❌ Login failed:", err);
     document.getElementById("loginStatus").textContent = "❌ Login failed.";
