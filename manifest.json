@@ -37,7 +37,11 @@
         "history.html",
         "history.js",
         "jspdf.umd.min.js",
-        "lib/config.js"
+        "lib/config.js",
+        "lib/firebase-app.js",
+        "lib/firebase-auth.js",
+        "login.html",
+        "login.js"
       ],
       "matches": ["<all_urls>"]
     }
