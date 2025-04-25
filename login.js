@@ -1,48 +1,35 @@
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider
-} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+// login.js
 
-// ✅ Firebase config (replace with your real values!)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+
+// 🔐 Your Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0c",
+  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0cgit",
   authDomain: "procon-extension.firebaseapp.com",
   projectId: "procon-extension",
   storageBucket: "procon-extension.appspot.com",
-  messagingSenderId: "137078467459",
-  appId: "1:137078467459:web:f81952fe2a8fe9a93624b6"
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-window.addEventListener("DOMContentLoaded", () => {
-  console.log("🔥 login.js loaded");
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const email = result.user.email;
 
-  const loginBtn = document.getElementById("loginBtn");
-  const loginStatus = document.getElementById("loginStatus");
-
-  loginBtn.addEventListener("click", async () => {
-    const provider = new GoogleAuthProvider();
-
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const email = result.user.email;
-
-      // ✅ Save to Chrome Extension storage
-      chrome.storage.local.set({ email }, () => {
-        console.log("✅ Email stored:", email);
-        loginStatus.textContent = `✅ Logged in as ${email}`;
-        setTimeout(() => window.close(), 2000); // auto-close window
-      });
-    } catch (error) {
-      console.error("❌ Login failed:", error);
-      loginStatus.textContent = `❌ Login failed`;
-    }
-  });
+    // Save email for usage check
+    chrome.storage.local.set({ email }, () => {
+      console.log("✅ Logged in as:", email);
+      document.getElementById("loginStatus").textContent = `✅ Logged in as ${email}`;
+      setTimeout(() => window.close(), 2000); // Auto-close after short delay
+    });
+  } catch (err) {
+    console.error("❌ Login failed:", err);
+    document.getElementById("loginStatus").textContent = "❌ Login failed.";
+  }
 });
