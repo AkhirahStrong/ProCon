@@ -48,8 +48,5 @@
       ],
       "matches": ["<all_urls>"]
     }
-  ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' https://www.gstatic.com/firebasejs/; object-src 'self';"
-  }
+  ]
 }
