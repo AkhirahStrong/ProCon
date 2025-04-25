@@ -1,6 +1,6 @@
 // limits.js
 
-const LOCAL_LIMIT = 15; // per browser
+const LOCAL_LIMIT = 50; // per browser
 const IP_LIMIT = 10;   // per IP per day
 
 // Track Local Usage Limit
