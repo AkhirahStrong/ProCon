@@ -4,8 +4,8 @@ const firebaseConfig = {
   authDomain: "procon-extension.firebaseapp.com",
   projectId: "procon-extension",
   storageBucket: "procon-extension.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  messagingSenderId: "137078467459",
+  appId: "1:137078467459:web:f81952fe2a8fe9a93624b6"
 };
 
 firebase.initializeApp(firebaseConfig);
