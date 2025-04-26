@@ -36,7 +36,11 @@
         "lib/firebase-bundle.iife.js",
         "signup.html",
         "signup.js",
-        "signup.css"
+        "signup.css",
+        "logout.html",
+        "logout.js",
+        "logout.css",
+        "logoutSuccess.html"
         
       ],
       "matches": ["<all_urls>"]

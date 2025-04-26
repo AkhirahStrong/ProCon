@@ -1,7 +1,7 @@
 // limits.js
 
-const LOCAL_LIMIT = 1; // per browser
-const IP_LIMIT = 10;   // per IP per day
+// const LOCAL_LIMIT = 1; 
+// const IP_LIMIT = 10;   
 
 // Track Local Usage Limit
 async function checkLocalLimit() {
@@ -24,7 +24,7 @@ async function checkLocalLimit() {
 
           // Set limits based on user type
           let allowedLimit = 3; // Default: guest
-          if (email) {
+          if (email && email.includes("@")) {
             allowedLimit = 5; // Signed up free user
           }
 
