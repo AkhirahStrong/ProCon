@@ -139,3 +139,18 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 
 });
+
+// ✅ Add the message listener AFTER contextMenus listener is fully closed
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "openSignupPage") {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("signup.html")
+    });
+  }
+
+  if (message.action === "openUpgradePage") {
+    chrome.tabs.create({
+      url: "https://your-stripe-payment-link.com"
+    });
+  }
+});
