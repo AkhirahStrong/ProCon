@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("signUpBtn").addEventListener("click", () => {
-    chrome.runtime.sendMessage({ action: "openSignupPage" });
+    chrome.runtime.sendMessage({ action: "signupWithGoogleBtn" });
   });
 
   // document.getElementById("loginBtn").addEventListener("click", () => {
