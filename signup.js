@@ -18,23 +18,23 @@ const auth = firebaseBundle.getAuth(app);
 document.addEventListener("DOMContentLoaded", () => {
 
   // Google Sign Up / Login
-  document.getElementById("signupWithGoogleBtn").addEventListener("click", async () => {
-    const provider = new firebaseBundle.GoogleAuthProvider();
+  // document.getElementById("signupWithGoogleBtn").addEventListener("click", async () => {
+  //   const provider = new firebaseBundle.GoogleAuthProvider();
 
-    try {
-      const result = await firebaseBundle.signInWithPopup(auth, provider);
-      const email = result.user.email;
+  //   try {
+  //     const result = await firebaseBundle.signInWithPopup(auth, provider);
+  //     const email = result.user.email;
 
-      chrome.storage.local.set({ email }, () => {
-        console.log("✅ Google email saved:", email);
-        window.location.href = "popup.html"; // Redirect after success
-      });
+  //     chrome.storage.local.set({ email }, () => {
+  //       console.log("✅ Google email saved:", email);
+  //       window.location.href = "popup.html"; // Redirect after success
+  //     });
 
-    } catch (error) {
-      console.error("❌ Google signup failed:", error);
-      document.getElementById("statusMessage").textContent = "Signup failed. Please try again.";
-    }
-  });
+  //   } catch (error) {
+  //     console.error("❌ Google signup failed:", error);
+  //     document.getElementById("statusMessage").textContent = "Signup failed. Please try again.";
+  //   }
+  // });
 
   // Email and Password Sign Up
   document.getElementById("signupWithEmailBtn").addEventListener("click", async () => {
