@@ -2,16 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Logout Success</title>
+    <title>Logged Out - ProCon</title>
     <link rel="stylesheet" href="logout.css" />
+    <script>
+      // ✅ Auto-redirect back to home after 5 seconds
+      setTimeout(() => {
+        window.location.href = chrome.runtime.getURL("popup.html");
+      }, 5000);
+    </script>
   </head>
   <body>
     <div class="logout-container">
-      <h1>✅ You are now logged out.</h1>
+      <h1>✅ Successfully Logged Out</h1>
+      <p>Returning to Home...</p>
       <button
         onclick="window.location.href=chrome.runtime.getURL('popup.html')"
       >
-        Back to Home
+        Go Now
       </button>
     </div>
   </body>
