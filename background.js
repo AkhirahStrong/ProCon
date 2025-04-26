@@ -72,7 +72,18 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
 
     // 1. Local Limit Check
-    const localAllowed = await checkLocalLimit();
+    // const localAllowed = await checkLocalLimit();
+    chrome.storage.local.get("email", (res) => {
+      if (!res.email) {
+        console.warn("❌ No email found. User must log in.");
+        return;
+      }
+    
+      console.log("✅ Email found:", res.email);
+      checkLocalLimit(); // now safe to run
+    });
+    
+
 
     if (!localAllowed) {
       // Open your limit.html as its own tab
