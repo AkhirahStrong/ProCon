@@ -8,8 +8,8 @@ const firebaseConfig = {
     appId: "1:137078467459:web:f81952fe2a8fe9a93624b6"
   };
   
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+  import { initializeApp } from "lib/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "lib/firebase-auth.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
