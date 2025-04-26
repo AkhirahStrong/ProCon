@@ -39,7 +39,7 @@ async function checkIfProUser() {
     // }
 
     if (!email) {
-      console.warn("⚠️ No email found. Prompt user to log in.");
+      // console.warn("⚠️ No email found. Prompt user to log in.");
       // Optional: Open login page automatically
       chrome.runtime.openOptionsPage?.(); // or manually open login.html
       return false;
