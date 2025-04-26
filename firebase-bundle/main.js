@@ -1,5 +1,18 @@
-// main.js
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+// main.js (for Vite bundling)
 
-export { initializeApp, getAuth, signInWithPopup, GoogleAuthProvider };
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider
+} from 'firebase/auth';
+
+export {
+  initializeApp,
+  getAuth,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider
+};
+
