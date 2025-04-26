@@ -12,9 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("signUpBtn").addEventListener("click", () => {
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("signup.html")
-    });
+    chrome.runtime.sendMessage({ action: "openSignupPage" });
   });
 
   // document.getElementById("loginBtn").addEventListener("click", () => {

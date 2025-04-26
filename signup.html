@@ -3,15 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <title>Sign Up - ProCon</title>
+    <!-- Firebase Scripts -->
     <script defer src="lib/firebase-app.js"></script>
     <script defer src="lib/firebase-auth.js"></script>
+    <!-- CSS Style -->
+    <link rel="stylesheet" href="signup.css" />
   </head>
   <body>
-    <h1>Sign Up with Google</h1>
+    <div class="signup-container">
+      <h1>Sign Up for ProCon</h1>
 
-    <button id="signupWithGoogleBtn">Sign Up / Login with Google</button>
-    <p id="statusMessage"></p>
+      <div class="google-signup">
+        <button id="signupWithGoogleBtn">Sign Up / Login with Google</button>
+      </div>
 
-    <script src="signup.js"></script>
+      <div class="separator">
+        <span>OR</span>
+      </div>
+
+      <div class="email-signup">
+        <input type="email" id="emailInput" placeholder="Email Address" />
+        <input type="password" id="passwordInput" placeholder="Password" />
+        <button id="signupWithEmailBtn">Sign Up with Email</button>
+      </div>
+
+      <p id="statusMessage"></p>
+    </div>
+
+    <!-- External JS -->
+    <script type="module" src="signup.js"></script>
   </body>
 </html>
