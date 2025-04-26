@@ -2,15 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>ProCon Signup</title>
-    <link rel="stylesheet" href="signup.css" />
+    <title>Sign Up - ProCon</title>
+    <script defer src="lib/firebase-app.js"></script>
+    <script defer src="lib/firebase-auth.js"></script>
   </head>
   <body>
-    <h2>Sign up for ProCon</h2>
-    <input type="email" id="email" placeholder="Enter your email" />
-    <button id="signupBtn">Sign Up</button>
-    <p id="status"></p>
+    <h1>Sign Up with Google</h1>
 
-    <script src="signup.js"></script>
+    <button id="signupWithGoogleBtn">Sign Up / Login with Google</button>
+    <p id="statusMessage"></p>
+
+    <script type="module" src="signup.js"></script>
   </body>
 </html>
