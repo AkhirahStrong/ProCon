@@ -17,15 +17,12 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-
 // Call Backend API
 async function callChatGPT(text, lang) {
+  const userData = await chrome.storage.local.get(["email", "lang"]);
+  const email = userData.email;
 
-const userData = await chrome.storage.local.get(["email", "lang"]);
-const email = userData.email;
-// const lang = userData.lang || "en";  
-
-console.log("📡 Sending to backend:", BACKEND_URL);
+  console.log("📡 Sending to backend:", BACKEND_URL);
   console.log("✉️ Email:", email);
   console.log("📝 Selected text:", text);
 
@@ -35,7 +32,7 @@ console.log("📡 Sending to backend:", BACKEND_URL);
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ selectedText: text, lang, email })  // send email too
+      body: JSON.stringify({ selectedText: text, lang, email })
     });
 
     const data = await res.json();
@@ -54,15 +51,8 @@ console.log("📡 Sending to backend:", BACKEND_URL);
   }
 }
 
-
-// testing data parsing 
-// console.log("Parsed data:", data);
-
-
-
 // Context Menu Handler
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-
   if (info.menuItemId === "analyzePrivacy") {
     const selectedText = info.selectionText;
 
@@ -71,87 +61,64 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       return;
     }
 
-    // 1. Local Limit Check
-    // const localAllowed = await checkLocalLimit();
     chrome.storage.local.get("email", async (res) => {
       if (!res.email) {
         console.warn("❌ No email found. User must log in.");
         return;
       }
-    
+
       console.log("✅ Email found:", res.email);
-    
-      // ✅ Await the result of limit check
+
       const allowed = await checkLocalLimit();
-    
+
       if (!allowed) {
-        console.warn("🚫 Limit reached. Showing modal...");
-        showLimitModal(); // You likely already have this function
-      } else {
-        console.log("✅ User is under the limit. Proceed.");
-        // continue normally
+        console.warn("🚫 Limit reached. Opening modal...");
+        chrome.tabs.create({
+          url: chrome.runtime.getURL('localLimit.html')
+        });
+        return; // 🛑 Stop further execution
       }
-    });
-    
-    
 
-
-    if (!localAllowed) {
-      // Open your limit.html as its own tab
-      chrome.tabs.create({
-        url: chrome.runtime.getURL('localLimit.html')
-      });
-    
-      return;  // Stop running anything else
-    }
-
-    // 2. Show "Analyzing" Alert
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: (text) => alert(`⏳ Analyzing:\n\n"${text}"`),
-      args: [selectedText]
-    });
-
-    const lang = await chrome.storage.local.get("lang").then(res => res.lang || "en");
-
-    try {
-      // 3. Backend Call with IP Limit Check
-      const result = await callChatGPT(selectedText, lang);
-
-      // 4. Save to History
-      const timestamp = new Date().toISOString();
-      const siteName = new URL(tab.url).hostname;
-      const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
-
-      chrome.storage.local.get({ history: [] }, (data) => {
-        const updated = [...data.history, newEntry];
-        chrome.storage.local.set({ history: updated });
-      });
-
-      // 5. Open Summary Page
-      // chrome.tabs.create({
-      //   url: chrome.runtime.getURL(`summary.html?summary=${encodeURIComponent(result)}`)
-      // });
-
-      await chrome.storage.local.set({ latestSummary: result });
-
-      chrome.tabs.create({
-        url: chrome.runtime.getURL("summary.html")
-      });
-      
-
-
-
-    } catch (err) {
-      console.warn("Analysis failed:", err.message);
-
+      // 2. Show "Analyzing" Alert
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: (errorMessage) => alert(errorMessage),
-        args: [err.message]
+        func: (text) => alert(`⏳ Analyzing:\n\n"${text}"`),
+        args: [selectedText]
       });
-    }
 
+      const lang = await chrome.storage.local.get("lang").then(res => res.lang || "en");
+
+      try {
+        // 3. Backend Call with IP Limit Check
+        const result = await callChatGPT(selectedText, lang);
+
+        // 4. Save to History
+        const timestamp = new Date().toISOString();
+        const siteName = new URL(tab.url).hostname;
+        const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
+
+        chrome.storage.local.get({ history: [] }, (data) => {
+          const updated = [...data.history, newEntry];
+          chrome.storage.local.set({ history: updated });
+        });
+
+        // 5. Open Summary Page
+        await chrome.storage.local.set({ latestSummary: result });
+
+        chrome.tabs.create({
+          url: chrome.runtime.getURL("summary.html")
+        });
+
+      } catch (err) {
+        console.warn("Analysis failed:", err.message);
+
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (errorMessage) => alert(errorMessage),
+          args: [err.message]
+        });
+      }
+    });
   }
 
   if (info.menuItemId === "viewHistory") {
@@ -159,5 +126,4 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       url: chrome.runtime.getURL("history.html")
     });
   }
-
 });
