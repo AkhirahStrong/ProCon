@@ -153,4 +153,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       url: "https://your-stripe-payment-link.com"
     });
   }
+
+  
 });

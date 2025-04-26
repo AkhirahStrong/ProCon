@@ -20,6 +20,9 @@
   "action": {
     "default_title": "ProCon Privacy Analyzer"
   },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://*"
+  },
   "web_accessible_resources": [
     {
       "resources": [
@@ -34,6 +37,7 @@
         "signup.html",
         "signup.js",
         "signup.css"
+        
       ],
       "matches": ["<all_urls>"]
     }
