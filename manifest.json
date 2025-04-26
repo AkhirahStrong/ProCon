@@ -30,10 +30,10 @@
         "history.js",
         "jspdf.umd.min.js",
         "lib/config.js",
-        "lib/firebase-app.js",
-        "lib/firebase-auth.js",
+        "lib/firebase-bundle.iife.js",
         "signup.html",
-      "signup.js"
+        "signup.js",
+        "signup.css"
       ],
       "matches": ["<all_urls>"]
     }

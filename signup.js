@@ -1,33 +1,33 @@
-import { initializeApp } from "./lib/firebase-app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "./lib/firebase-auth";
+// No imports here because firebaseBundle is already globally loaded
 
-
-// ✅ Initialize Firebase
+// Your Firebase project configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0c",
-    authDomain: "procon-extension.firebaseapp.com",
-    projectId: "procon-extension",
-    storageBucket: "procon-extension.appspot.com",
-    messagingSenderId: "137078467459",
-    appId: "1:137078467459:web:f81952fe2a8fe9a93624b6"
-  };
-  
+  apiKey: "AIzaSyDQ-XebQsAjLqV3Ti3pGfE1iOqz8r2VA0c",
+  authDomain: "procon-extension.firebaseapp.com",
+  projectId: "procon-extension",
+  storageBucket: "procon-extension.appspot.com",
+  messagingSenderId: "137078467459",
+  appId: "1:137078467459:web:f81952fe2a8fe9a93624b6"
+};
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Initialize Firebase app using bundled firebaseBundle
+const app = firebaseBundle.initializeApp(firebaseConfig);
+const auth = firebaseBundle.getAuth(app);
 
-// Sign Up with Google
+// Set up event listeners after DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Google Sign Up / Login
   document.getElementById("signupWithGoogleBtn").addEventListener("click", async () => {
-    const provider = new GoogleAuthProvider();
+    const provider = new firebaseBundle.GoogleAuthProvider();
 
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await firebaseBundle.signInWithPopup(auth, provider);
       const email = result.user.email;
 
       chrome.storage.local.set({ email }, () => {
         console.log("✅ Google email saved:", email);
-        window.location.href = "popup.html"; // Or thank you page
+        window.location.href = "popup.html"; // Redirect after success
       });
 
     } catch (error) {
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Sign Up with Email + Password
+  // Email and Password Sign Up
   document.getElementById("signupWithEmailBtn").addEventListener("click", async () => {
     const email = document.getElementById("emailInput").value.trim();
     const password = document.getElementById("passwordInput").value.trim();
@@ -48,11 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
+      const result = await firebaseBundle.createUserWithEmailAndPassword(auth, email, password);
 
       chrome.storage.local.set({ email: result.user.email }, () => {
         console.log("✅ Email signup saved:", result.user.email);
-        window.location.href = "popup.html"; // Or thank you page
+        window.location.href = "popup.html"; // Redirect after success
       });
 
     } catch (error) {
@@ -60,5 +60,5 @@ document.addEventListener("DOMContentLoaded", () => {
       statusMessage.textContent = error.message || "Signup failed.";
     }
   });
+
 });
-  
