@@ -1,3 +1,5 @@
+// popup.js
+
 chrome.storage.local.get("email", (res) => {
   const status = document.getElementById("statusMessage");
   const logoutBtn = document.getElementById("logoutBtn");
@@ -5,7 +7,7 @@ chrome.storage.local.get("email", (res) => {
   if (!res.email) {
     status.textContent = "🔒 You're not logged in. Redirecting...";
     setTimeout(() => {
-      window.location.href = "auth.html";
+      window.location.href = chrome.runtime.getURL("signup.html"); // ✅ Real login/signup page
     }, 1000);
     return;
   }
@@ -13,18 +15,20 @@ chrome.storage.local.get("email", (res) => {
   status.textContent = `✅ Logged in as: ${res.email}`;
   logoutBtn.style.display = "inline-block";
 
-  // ✅ Dynamically load limits.js
+  // ✅ Load limits.js only if logged in
   const script = document.createElement("script");
-  script.src = "limits.js";
+  script.src = chrome.runtime.getURL("limits.js");
   document.body.appendChild(script);
 });
 
+// ✅ Logout logic
 document.getElementById("logoutBtn").addEventListener("click", () => {
   chrome.storage.local.remove("email", () => {
-    alert("👋 Logged out.");
-    window.location.href = "auth.html";
+    // Smoothly go to signup page after logout
+    window.location.href = chrome.runtime.getURL("signup.html");
   });
 });
+
 
 
   
