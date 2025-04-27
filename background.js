@@ -19,7 +19,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 
 // Call Backend API
-async function callChatGPT(text) {
+async function callChatGPT(text, lang) {
 
 const userData = await chrome.storage.local.get(["email", "lang"]);
 const email = userData.email;
@@ -29,13 +29,18 @@ console.log("📡 Sending to backend:", BACKEND_URL);
   console.log("✉️ Email:", email);
   console.log("📝 Selected text:", text);
 
+  if (!text || !email) {
+    console.error("🚫 Missing selectedText or email");
+    throw new Error("Missing selectedText or email"); // <--- prevent calling backend with bad data
+  }
+
   try {
     const res = await fetch(BACKEND_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ selectedText: text, email })  // send email too
+      body: JSON.stringify({ selectedText: text, lang, email })  // send email too
     });
 
     const data = await res.json();
@@ -94,7 +99,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
     try {
       // 3. Backend Call with IP Limit Check
-      const result = await callChatGPT(selectedText);
+      const result = await callChatGPT(selectedText, lang);
 
       // 4. Save to History
       const timestamp = new Date().toISOString();
