@@ -30,13 +30,18 @@ async function callChatGPT(text, lang) {
   console.log("✉️ Email:", email);
   console.log("📝 Selected text:", text);
 
+  // ✅ PREVENT bad requests
+  if (!text || !email) {
+    throw new Error("Missing selected text or email — cannot continue.");
+  }
+
   try {
     const res = await fetch(BACKEND_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ selectedText: text, lang, email }) // sending email too
+      body: JSON.stringify({ selectedText: text, lang, email })
     });
 
     const data = await res.json();
@@ -55,6 +60,7 @@ async function callChatGPT(text, lang) {
     throw fetchError;
   }
 }
+
 
 // ✅ Context menu click handler
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
