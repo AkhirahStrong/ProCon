@@ -1,12 +1,22 @@
 // Handle POST requests to /analyze route
 app.post("/analyze", async (req, res) => {
 
+  // const { selectedText, email } = req.body;
+
+  if (!selectedText || !email) { // ❌ this line blocks guests
+    return res.status(400).json({ error: "Missing selectedText or email" });
+  }
+
   // Log to Replit console when this route is hit
   console.log("🔥 HIT /analyze route");
 
   // Get selected text sent from Chrome Extension
-  const { selectedText } = req.body;
+  const { selectedText, email } = req.body;
 
+  if (!selectedText) {
+    return res.status(400).json({ error: "Missing selectedText" });
+  }
+  
   // Log the received text (good for debugging)
   console.log("📄 Selected Text Received:", selectedText);
 
