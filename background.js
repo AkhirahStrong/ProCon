@@ -5,25 +5,23 @@ importScripts('limits.js');
 const BACKEND_URL = "https://procon-backend.onrender.com/analyze";
 
 // ✅ Helper: Call your backend AI service
-async function callChatGPT(selectedText, lang) {
+async function callChatGPT(text, lang) {
   const userData = await chrome.storage.local.get(["email", "lang"]);
-  const email = userData.email; // Could be undefined for guest
-
-  // Build body: Only include email if it exists
-  const body = { selectedText, lang };
-  if (email) {
-    body.email = email;
-  }
+  const email = userData.email || "guest@procon.com"; // <- 🛠 Force a guest email if missing
 
   console.log("📡 Sending to backend:", BACKEND_URL);
-  console.log("✉️ Email:", email || "(Guest)");
-  console.log("📝 Selected text:", selectedText);
+  console.log("✉️ Email:", email);
+  console.log("📝 Selected text:", text);
+
+  if (!text || !email) {
+    throw new Error("Missing selectedText or email — cannot continue.");
+  }
 
   try {
     const res = await fetch(BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ selectedText: text, lang, email })
     });
 
     const data = await res.json();
@@ -37,11 +35,12 @@ async function callChatGPT(selectedText, lang) {
     }
 
     return data.summary;
-  } catch (err) {
-    console.error("Fetch error:", err);
-    throw err; // Let the caller handle the error
+  } catch (fetchError) {
+    console.error("Fetch error:", fetchError);
+    throw fetchError;
   }
 }
+
 
 // ✅ Context menu creation
 chrome.runtime.onInstalled.addListener(() => {
