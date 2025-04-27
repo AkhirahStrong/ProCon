@@ -3,7 +3,7 @@ app.post("/analyze", async (req, res) => {
 
   // const { selectedText, email } = req.body;
 
-  if (!selectedText || !email) { // ❌ this line blocks guests
+  if (!selectedText ) { // ❌ this line blocks guests
     return res.status(400).json({ error: "Missing selectedText or email" });
   }
 
@@ -16,7 +16,7 @@ app.post("/analyze", async (req, res) => {
   if (!selectedText) {
     return res.status(400).json({ error: "Missing selectedText" });
   }
-  
+
   // Log the received text (good for debugging)
   console.log("📄 Selected Text Received:", selectedText);
 
