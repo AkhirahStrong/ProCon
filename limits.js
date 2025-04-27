@@ -64,7 +64,7 @@ async function checkIfProUser() {
       return false;
     }
 
-    const res = await fetch("https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/check-pro", {
+    const res = await fetch("https://procon-backend.onrender.com/check-pro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email })  // send email for Pro check
