@@ -1,13 +1,16 @@
+// background.js
+
+// ✅ Import local limits
 importScripts('limits.js');
 
-// const BACKEND_URL = "https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/analyze";
-const BACKEND_URL = "https://procon-backend.onrender.com";
+// ✅ Your backend URL
+const BACKEND_URL = "https://procon-backend.onrender.com/analyze";
 
-// On install - Create Context Menus
+// ✅ When extension is installed → create context menus
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "analyzePrivacy",
-    title: "ProCon",
+    title: "ProCon Analyze Selection",
     contexts: ["selection"]
   });
 
@@ -18,92 +21,22 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// Context Menu Handler
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === "analyzePrivacy") {
-    const selectedText = info.selectionText?.trim();
+// ✅ Function to call backend to analyze selected text
+async function callChatGPT(text, lang) {
+  const userData = await chrome.storage.local.get(["email", "lang"]);
+  const email = userData.email;
 
-    if (!selectedText) {
-      console.warn("⚠️ No text selected.");
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => alert("⚠️ Please select text first."),
-      });
-      return;
-    }
-
-    // 1. Check local usage limit first
-    const localAllowed = await checkLocalLimit();
-    if (!localAllowed) {
-      chrome.tabs.create({ url: chrome.runtime.getURL('localLimit.html') });
-      return;
-    }
-
-    // 2. Show "Analyzing" popup
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: (text) => alert(`⏳ Analyzing:\n\n"${text}"`),
-      args: [selectedText],
-    });
-
-    // 3. Check if user is guest or signed-in
-    chrome.storage.local.get(["email", "lang", "guestUsageCount"], async (result) => {
-      const email = result.email;
-      const lang = result.lang || "en";
-
-      if (!email) {
-        // Guest Mode
-        const guestUsage = result.guestUsageCount || 0;
-
-        if (guestUsage >= 3) {
-          console.warn("🚫 Guest limit reached. Forcing signup...");
-          chrome.tabs.create({ url: chrome.runtime.getURL('signup.html') });
-          return;
-        }
-
-        // Allow guest usage
-        chrome.storage.local.set({ guestUsageCount: guestUsage + 1 });
-
-        try {
-          const summary = await callChatGPT(selectedText, lang, "guest@example.com");
-          await saveSummary(summary, tab.url);
-        } catch (err) {
-          console.error("Guest analysis failed:", err.message);
-        }
-
-        return;
-      }
-
-      // Logged-in user
-      try {
-        const summary = await callChatGPT(selectedText, lang, email);
-        await saveSummary(summary, tab.url);
-      } catch (err) {
-        console.error("Logged-in analysis failed:", err.message);
-      }
-    });
-  }
-
-  if (info.menuItemId === "viewHistory") {
-    chrome.tabs.create({ url: chrome.runtime.getURL("history.html") });
-  }
-});
-
-// Call Backend API
-async function callChatGPT(text, lang, email) {
   console.log("📡 Sending to backend:", BACKEND_URL);
   console.log("✉️ Email:", email);
   console.log("📝 Selected text:", text);
 
-  if (!text || !email) {
-    throw new Error("Missing selectedText or email");
-  }
-
   try {
     const res = await fetch(BACKEND_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ selectedText: text, lang, email })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ selectedText: text, lang, email }) // sending email too
     });
 
     const data = await res.json();
@@ -123,28 +56,89 @@ async function callChatGPT(text, lang, email) {
   }
 }
 
-// Save to history helper
-async function saveSummary(summary, siteUrl) {
-  const timestamp = new Date().toISOString();
-  const siteName = new URL(siteUrl).hostname;
-  const newEntry = { summary, timestamp, bookmarked: false, site: siteName };
+// ✅ Context menu click handler
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
-  chrome.storage.local.get({ history: [] }, (data) => {
-    const updated = [...data.history, newEntry];
-    chrome.storage.local.set({ history: updated });
-  });
+  if (info.menuItemId === "analyzePrivacy") {
+    const selectedText = info.selectionText;
 
-  await chrome.storage.local.set({ latestSummary: summary });
+    if (!selectedText) {
+      console.warn("⚠️ No text selected.");
+      return;
+    }
 
-  chrome.tabs.create({ url: chrome.runtime.getURL("summary.html") });
-}
+    // 1. Local Limit Check first
+    const localAllowed = await checkLocalLimit();
+    console.log("🧪 localAllowed result:", localAllowed);
 
-// ✅ Background message listeners (signup/upgrade buttons)
+    if (!localAllowed) {
+      console.warn("🚫 Limit reached. Forcing signup...");
+      // 🚪 Open signup.html if limit is hit
+      chrome.tabs.create({
+        url: chrome.runtime.getURL('signup.html')
+      });
+      return; // ⛔ Stop further analysis
+    }
+
+    // 2. Show "Analyzing" alert
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (text) => alert(`⏳ Analyzing:\n\n"${text}"`),
+      args: [selectedText]
+    });
+
+    const lang = await chrome.storage.local.get("lang").then(res => res.lang || "en");
+
+    try {
+      // 3. Call backend
+      const result = await callChatGPT(selectedText, lang);
+
+      // 4. Save to History
+      const timestamp = new Date().toISOString();
+      const siteName = new URL(tab.url).hostname;
+      const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
+
+      chrome.storage.local.get({ history: [] }, (data) => {
+        const updated = [...data.history, newEntry];
+        chrome.storage.local.set({ history: updated });
+      });
+
+      await chrome.storage.local.set({ latestSummary: result });
+
+      // 5. Open summary.html to show result
+      chrome.tabs.create({
+        url: chrome.runtime.getURL("summary.html")
+      });
+
+    } catch (err) {
+      console.warn("❌ Analysis failed:", err.message);
+
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (errorMessage) => alert(errorMessage),
+        args: [err.message]
+      });
+    }
+  }
+
+  if (info.menuItemId === "viewHistory") {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("history.html")
+    });
+  }
+});
+
+// ✅ Listen for custom messages (for signup/upgrade)
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "openSignupPage") {
-    chrome.tabs.create({ url: chrome.runtime.getURL("signup.html") });
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("signup.html")
+    });
   }
+
   if (message.action === "openUpgradePage") {
-    chrome.tabs.create({ url: "https://your-stripe-payment-link.com" });
+    chrome.tabs.create({
+      url: "https://your-stripe-payment-link.com" // Replace with your Stripe link
+    });
   }
 });
