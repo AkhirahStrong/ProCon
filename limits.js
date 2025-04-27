@@ -55,19 +55,15 @@ async function checkIfProUser() {
   try {
     const { email } = await chrome.storage.local.get("email");
 
-  
-
     if (!email) {
-      console.warn("⚠️ No email found. Prompt user to log in.");
-      // Optional: Open login page automatically
-      // chrome.runtime.openOptionsPage?.(); // or manually open login.html
-      return false;
+      console.warn("⚠️ No email found. Treating as GUEST user.");
+      return false; // GUEST users handled by local limit (3 free)
     }
 
     const res = await fetch("https://procon-backend.onrender.com/check-pro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })  // send email for Pro check
+      body: JSON.stringify({ email }) // send email for Pro check
     });
 
     const body = await res.json();
@@ -79,5 +75,6 @@ async function checkIfProUser() {
     return false;
   }
 }
+
 
 
