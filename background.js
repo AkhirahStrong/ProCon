@@ -29,10 +29,10 @@ console.log("📡 Sending to backend:", BACKEND_URL);
   console.log("✉️ Email:", email);
   console.log("📝 Selected text:", text);
 
-  if (!text || !email) {
-    console.error("🚫 Missing selectedText or email");
-    throw new Error("Missing selectedText or email"); // <--- prevent calling backend with bad data
-  }
+  // if (!text || !email) {
+  //   console.error("🚫 Missing selectedText or email");
+  //   throw new Error("Missing selectedText or email"); // <--- prevent calling backend with bad data
+  // }
 
   try {
     const res = await fetch(BACKEND_URL, {
