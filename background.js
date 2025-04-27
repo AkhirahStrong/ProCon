@@ -19,7 +19,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 
 // Call Backend API
-async function callChatGPT(text, lang) {
+async function callChatGPT(text) {
 
 const userData = await chrome.storage.local.get(["email", "lang"]);
 const email = userData.email;
