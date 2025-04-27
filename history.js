@@ -27,7 +27,8 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     const entriesHtml = entries.map((entry, index) => {
-      const lines = entry.summary.split("\n");
+      // const lines = entry.summary.split("\n");
+      const lines = (entry.summary || "").split("\n");
       let html = "";
       let currentListClass = "";
       let listOpen = false;
