@@ -35,7 +35,7 @@ console.log("📡 Sending to backend:", BACKEND_URL);
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ selectedText: text, lang, email })  // send email too
+      body: JSON.stringify({ selectedText: text, email })  // send email too
     });
 
     const data = await res.json();
@@ -94,7 +94,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
     try {
       // 3. Backend Call with IP Limit Check
-      const result = await callChatGPT(selectedText, lang);
+      const result = await callChatGPT(selectedText);
 
       // 4. Save to History
       const timestamp = new Date().toISOString();
