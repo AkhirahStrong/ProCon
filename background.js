@@ -1,6 +1,7 @@
 importScripts('limits.js');
 
-const BACKEND_URL = "https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/analyze";
+// const BACKEND_URL = "https://b8df0ca0-33e6-4b75-a1f3-5524ede8a8a3-00-311caz7ousjf5.kirk.replit.dev/analyze";
+const BACKEND_URL = "https://procon-backend.onrender.com";
 
 // On install - Create Context Menus
 chrome.runtime.onInstalled.addListener(() => {
