@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Bind button events
   document.getElementById("upgradeBtn").addEventListener("click", () => {
-    window.open("https://buy.stripe.com/test_5kA18195J10kdr28ww", "_blank");
+    window.open("https://buy.stripe.com/dR629Zf9Wb1seXe6oo", "_blank");
   });
 
   document.getElementById("signUpBtn").addEventListener("click", () => {

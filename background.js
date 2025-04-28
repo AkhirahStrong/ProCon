@@ -137,7 +137,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === "openUpgradePage") {
     chrome.tabs.create({
-      url: "https://your-stripe-payment-link.com" // Replace with real Stripe checkout link
+      url: "https://buy.stripe.com/dR629Zf9Wb1seXe6oo" // Replace with real Stripe checkout link
     });
   }
 });
