@@ -7,7 +7,7 @@ const BACKEND_URL = "https://procon-backend.onrender.com/analyze";
 // ✅ Helper: Call your backend AI service
 async function callChatGPT(text, lang) {
   const userData = await chrome.storage.local.get(["email", "lang"]);
-  const email = userData.email || "guest@procon.com"; // 🛠 Fallback to guest email
+  const email = userData.email || "guest@procon.com"; // 🛠 Fallback to guest email if missing
 
   console.log("📡 Sending to backend:", BACKEND_URL);
   console.log("✉️ Email:", email);
@@ -71,46 +71,27 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     console.log("🧪 localAllowed result:", localAllowed);
 
     if (!localAllowed) {
-      // 🚫 User exceeded daily limit — show signup/upgrade prompt
-
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => {
-          return confirm("🚫 You've reached your free limit.\n\nSign up for free to unlock 5 daily uses?\n\nPress OK to Sign Up, or Cancel to see options.");
-        },
-      }, async (injectionResults) => {
-        const userChoice = injectionResults[0].result;
-
-        if (userChoice) {
-          // ✅ User clicked "OK" → open signup page
-          chrome.tabs.create({
-            url: chrome.runtime.getURL("signup.html")
-          });
-        } else {
-          // ❌ User clicked "Cancel" → open the full options (Upgrade / Wait)
-          chrome.tabs.create({
-            url: chrome.runtime.getURL("localLimit.html")
-          });
-        }
+      // 🚫 If limit reached, **open localLimit.html** immediately
+      chrome.tabs.create({
+        url: chrome.runtime.getURL("localLimit.html")
       });
-
-      return; // ⛔ Don't continue analyzing if limit hit
+      return;
     }
 
-    // 2. Show "analyzing" alert injected into page
+    // 2. Show "analyzing" alert
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (text) => alert(`⏳ Analyzing:\n\n"${text}"`),
       args: [selectedText]
     });
 
-    // 3. Backend call to analyze
+    // 3. Call backend
     const lang = await chrome.storage.local.get("lang").then(res => res.lang || "en");
 
     try {
       const result = await callChatGPT(selectedText, lang);
 
-      // 4. Save analysis to local storage history
+      // 4. Save analysis result
       const timestamp = new Date().toISOString();
       const siteName = new URL(tab.url).hostname;
       const newEntry = { summary: result, timestamp, bookmarked: false, site: siteName };
@@ -120,7 +101,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         chrome.storage.local.set({ history: updatedHistory });
       });
 
-      // 5. Open summary.html to show the results
+      // 5. Open summary page
       await chrome.storage.local.set({ latestSummary: result });
       chrome.tabs.create({
         url: chrome.runtime.getURL("summary.html")
@@ -144,7 +125,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-// ✅ Handle extension-wide messages (open signup/upgrade if clicked)
+// ✅ Listen to extension-wide messages (signup, upgrade)
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "openSignupPage") {
     chrome.tabs.create({
@@ -154,7 +135,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === "openUpgradePage") {
     chrome.tabs.create({
-      url: "https://buy.stripe.com/dR629Zf9Wb1seXe6oo" // Update if needed
+      url: "https://buy.stripe.com/dR629Zf9Wb1seXe6oo" // Change this if needed
     });
   }
 });
